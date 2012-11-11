@@ -425,7 +425,7 @@ Robot* roger;
 		case 11: // UNCONVERGED, CONVERGED
 			child_states[0] = DONT_CARE;
 			child_states[1] = primitive1(roger);
-			printf("time: %lf Macro state: %s (track: %s / search: %s)\n", time, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
+			printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
 			state = UNCONVERGED;
 			break;
 		case 12: // CONVERGED, NO_REFERENCE
