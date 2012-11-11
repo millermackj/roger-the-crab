@@ -32,7 +32,7 @@ extern int new_test; // set to one at the beginning of each test input
 extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
 extern char filename[32];
-
+int firstRun = TRUE;
 
 
 
@@ -46,14 +46,15 @@ Robot* roger;
 
 //-------------------------------
 //PROJECT 3: You can comment in/out one of the primitive controllers below to developping /debugging them. 
-	// create a new output file upon initialization of SEARCH state
-	if(state == UNCONVERGED && prev_state == NO_REFERENCE){
+
+	// create a new output file on first loop
+	if(firstRun==TRUE){
+		firstRUN == FALSE;
   		if(writefile != NULL){// test if the current output file is open
   		// close the open file
   		fclose(writefile);
   		writefile = NULL;
   	}
-  	t = 0; // reset clock
   	// create new filename
   	sprintf(filename, "outfile_%d.txt", test_num);
   	// open a new output file
