@@ -32,7 +32,7 @@ extern int new_test; // set to one at the beginning of each test input
 extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
 extern char filename[32];
-static int firstRun = TRUE;
+int firstRun = TRUE;
 
 
 
@@ -49,20 +49,20 @@ Robot* roger;
 
 	// create a new output file on first loop
 	if(firstRun==TRUE){
-		firstRun == FALSE;
-  		if(writefile != NULL){// test if the current output file is open
-  		// close the open file
-  		fclose(writefile);
-  		writefile = NULL;
-  	}
-  	// create new filename
-  	sprintf(filename, "outfile_%d.txt", test_num);
-  	// open a new output file
-  	writefile = fopen(filename, "w");
+		firstRun = FALSE;
+		if(writefile != NULL){// test if the current output file is open
+			// close the open file
+			fclose(writefile);
+			writefile = NULL;
+		}
+		// create new filename
+		sprintf(filename, "outfile_%d.txt", test_num);
+		// open a new output file
+		writefile = fopen(filename, "w");
 
-  	fprintf(writefile, "time\tbase_heading\tR_eye\tL_eye\n"); // write header to file
-  	test_num++; // increment test counter
-  }
+		fprintf(writefile, "time\tbase_heading\tR_eye\tL_eye\n"); // write header to file
+		test_num++; // increment test counter
+	}
 	
 	prev_state = state;
 	//comment in to test primitive controller 0
