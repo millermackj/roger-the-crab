@@ -68,10 +68,10 @@ Robot* roger;
 	//state = primitive0(roger);
 
 	//comment in to test primitive controller 1
-	state = primitive1(roger);
+	//state = primitive1(roger);
 
 	//execute the combined search track controller
-	//state = macro0(roger);
+	state = macro0(roger);
 
 	if (t % 5 == 0 && writefile != NULL){
 		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf\n", t/1000.0, roger->base_position[2],
@@ -405,33 +405,34 @@ Robot* roger;
 			break;
 
 		case 1: // NO_REFERENCE, DONT_CARE
+			child_states[0] = DONT_CARE;
+			child_states[1] = primitive1(roger);
+			state = NO_REFERENCE;
+			break;
 			
 		case 2: // NO_REFERENCE, UNCONVERGED
-			
 		case 3: // NO_REFERENCE, CONVERGED
-			
+			child_states[0] = primitive0(roger);
+			child_states[1] = primitive1(roger);
+			state = NO_REFERENCE;
+			break;
 		case 4: // DONT_CARE, NO_REFERENCE
-					
 		case 5: // DONT_CARE, DONT_CARE
-			
 		case 6: // DONT_CARE, UNCONVERGED
-			
 		case 7: // DONT_CARE, CONVERGED
-							
+			state = DONT_CARE;
+			break;
 		case 8: // UNCONVERGED, NO_REFERENCE
-			
 		case 9: // UNCONVERGED, DONT_CARE
-			
 		case 10: // UNCONVERGED, UNCONVERGED
-			
 		case 11: // UNCONVERGED, CONVERGED
-			
+			child_states[0] = DONT_CARE;
+			child_states[1] = primitive1(roger);
+			state = UNCONVERGED;
+			break;
 		case 12: // CONVERGED, NO_REFERENCE
-			
 		case 13: // CONVERGED, DONT_CARE
-			
 		case 14: // CONVERGED, UNCONVERGED
-			
 		case 15: // CONVERGED, CONVERGED
 			child_states[0] = DONT_CARE;
 			child_states[1] = primitive1(roger);
