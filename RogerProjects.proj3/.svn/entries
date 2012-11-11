@@ -26,6 +26,74 @@ svn:special svn:externals svn:needs-lock
 
 b48b756a-ad16-4209-8216-177f301ef839
 
+.cproject
+file
+148
+
+
+
+2012-11-11T00:33:27.000000Z
+a76e8ab430ddfdaf2054797a27b2fa00
+2012-11-11T00:34:40.985935Z
+148
+jmillerm
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4063
+
+.project
+file
+148
+
+
+
+2012-11-11T00:33:27.000000Z
+16dd4bc9405f6cbab1ccb14c37901445
+2012-11-11T00:34:40.985935Z
+148
+jmillerm
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2346
+
 Makefile
 file
 
