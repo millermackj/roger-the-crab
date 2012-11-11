@@ -381,9 +381,6 @@ Robot* roger;
 		init = FALSE;
 	}
 
-	printf("Macro state: %s (track: %s / search: %s)\n", statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
-
-
 //------------------------
 //PROJECT3: Complete the case statement below to form the full finite state machine.
 //case 0 and case 15 are filled in as examples. 
@@ -428,6 +425,7 @@ Robot* roger;
 		case 11: // UNCONVERGED, CONVERGED
 			child_states[0] = DONT_CARE;
 			child_states[1] = primitive1(roger);
+			printf("time: %lf Macro state: %s (track: %s / search: %s)\n", time, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
 			state = UNCONVERGED;
 			break;
 		case 12: // CONVERGED, NO_REFERENCE
