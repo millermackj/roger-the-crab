@@ -376,7 +376,7 @@ Robot* roger;
 		child_states = (int*) malloc(num_children*sizeof(int));
 		for (i=0; i<num_children; i++) 
 		{
-			child_states[i] = DONT_CARE;
+			child_states[i] = NO_REFERENCE;
 		}
 		init = FALSE;
 	}
