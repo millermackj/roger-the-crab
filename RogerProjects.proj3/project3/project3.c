@@ -49,7 +49,7 @@ Robot* roger;
 
 	// create a new output file on first loop
 	if(firstRun==TRUE){
-		firstRUN == FALSE;
+		firstRun == FALSE;
   		if(writefile != NULL){// test if the current output file is open
   		// close the open file
   		fclose(writefile);
