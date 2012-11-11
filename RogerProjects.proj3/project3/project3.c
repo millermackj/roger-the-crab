@@ -32,7 +32,7 @@ extern int new_test; // set to one at the beginning of each test input
 extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
 extern char filename[32];
-int firstRun = TRUE;
+static int firstRun = TRUE;
 
 
 
