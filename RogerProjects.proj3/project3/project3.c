@@ -436,6 +436,7 @@ Robot* roger;
 			child_states[0] = DONT_CARE;
 			child_states[1] = primitive1(roger);
 			state = CONVERGED;
+			printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
 			break;
 
 		default:
