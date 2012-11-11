@@ -75,7 +75,7 @@ Robot* roger;
 	state = macro0(roger);
 
 	if (t % 5 == 0 && writefile != NULL){
-		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf%lf\n", t/1000.0, roger->base_position[2],
+		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf\t%lf\n", t/1000.0, roger->base_position[2],
 				roger->eye_theta[0], roger->eye_theta[1], sHeading);
 		// print time, base heading, and eye angles
 	}
