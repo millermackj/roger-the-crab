@@ -172,7 +172,7 @@ Robot* roger;
 	  	heading_error_base += 2.0*M_PI;
 
 	  // convert heading error into arc-length error
-	  arc_length = heading_error_base * 0.6;
+	  arc_length = heading_error_base * 0.7;
 
 	  // determine next setpoint for base
 
@@ -311,7 +311,7 @@ Robot* roger;
 
 
 
-		  if(fabs(error_base) < 0.01)
+		  if(fabs(error_base) < 0.05)
 			  	error_base = 0;
 		  {
 		  	// construct the homogeneous transform from the world to the mobile base
