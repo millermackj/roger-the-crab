@@ -365,7 +365,7 @@ Robot* roger;
 int macro0(roger)
 Robot* roger;
 {
-	int state = NO_REFERENCE;	
+	static int state = NO_REFERENCE;
 	const int num_children = 2;
 	static int init = TRUE;
 	static int* child_states;
