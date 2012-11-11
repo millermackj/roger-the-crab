@@ -27,7 +27,7 @@ char* statenames[4] = {"no reference", "don't care", "unconverged", "converged"}
 // for data collection to files
 extern FILE * writefile;
 double last_setX, last_setY;
-double initialHeading;
+double sHeading;
 extern int new_test; // set to one at the beginning of each test input
 extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
@@ -60,7 +60,7 @@ Robot* roger;
 		// open a new output file
 		writefile = fopen(filename, "w");
 
-		fprintf(writefile, "time\tbase_heading\tR_eye\tL_eye\n"); // write header to file
+		fprintf(writefile, "Time\tBase Heading\tR_Eye\tL_Eye\tSearch Heading\n"); // write header to file
 		test_num++; // increment test counter
 	}
 	
@@ -75,8 +75,8 @@ Robot* roger;
 	state = macro0(roger);
 
 	if (t % 5 == 0 && writefile != NULL){
-		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf\n", t/1000.0, roger->base_position[2],
-				roger->eye_theta[0], roger->eye_theta[1]);
+		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf%lf\n", t/1000.0, roger->base_position[2],
+				roger->eye_theta[0], roger->eye_theta[1], sHeading);
 		// print time, base heading, and eye angles
 	}
 
@@ -128,7 +128,7 @@ Robot* roger;
 				break;
 			}
 			printf("Picked random heading: %4.3f \n ", search_heading);
-			
+			sHeading = search_heading;
 			// go to next state
 			controller_state = MOVE;
 			break;
