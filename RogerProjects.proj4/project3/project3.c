@@ -390,26 +390,14 @@ Robot* roger;
 //running the corresponding controller or by directly assigning it. Additionally, you need 
 //to set 'state' for each case. 
 
-
+if(t % 50 == 0)
 	printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
 
 	//					      TRACK             SEARCH
 	switch (states_to_int(child_states, num_children))
 	{
 		case 0: // NO_REFERENCE, NO_REFERENCE
-
-			//Nothing more to be found
-			child_states[0] = primitive0(roger);
-			child_states[1] = primitive1(roger);
-			state = NO_REFERENCE;
-			break;
-
 		case 1: // NO_REFERENCE, DONT_CARE
-			child_states[0] = DONT_CARE;
-			child_states[1] = primitive1(roger);
-			state = NO_REFERENCE;
-			break;
-			
 		case 2: // NO_REFERENCE, UNCONVERGED
 		case 3: // NO_REFERENCE, CONVERGED
 			child_states[0] = primitive0(roger);
