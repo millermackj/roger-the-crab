@@ -12,6 +12,8 @@
 #include "control.h"
 #include "modes.h"
 
+#define RAD_PER_PIXEL ((M_PI/2.0)/(double)NPIXELS) // radians per pixel
+
 // states returned by controllers
 enum {
 	NO_REFERENCE = 0,
