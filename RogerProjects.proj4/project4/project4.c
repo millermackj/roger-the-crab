@@ -230,11 +230,14 @@ Robot* roger;
 	  ref_w[2] = 0.0;
 	  ref_w[3] = 1.0;
 
-
 	  matXvec(bTw, ref_w, ref_b);
+
+	  if(t%50 == 0)
+	  	printf("ballX_b: %f, ballY_b: %f", ref_b[X], ref_b[Y]);
+
 		//check if in reach (inv_kinematics will return TRUE)
-	  int left_OK = inv_kinematics(roger, LEFT, ref_b[0],ref_b[1],&theta_L0, &theta_L1);
-	  int right_OK = inv_kinematics(roger, RIGHT, ref_b[0],ref_b[1],&theta_R0, &theta_R1);
+	  int left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y],&theta_L0, &theta_L1);
+	  int right_OK = inv_kinematics(roger, RIGHT, ref_b[Y],ref_b[X],&theta_R0, &theta_R1);
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
@@ -246,7 +249,7 @@ Robot* roger;
 		else{ // left arm out of reach
   		// bring (or keep) left arm home
 			if(t % 50 == 0)
-			printf("left not in reach");
+			printf("left not in reach\n");
   		theta_L0 = arm_home_predator[LEFT][0];
 	   	theta_L1 = arm_home_predator[LEFT][1];
 		}
@@ -261,7 +264,7 @@ Robot* roger;
 	  else{
   		// bring (or keep) right arm home
 	  	if(t % 50 == 0)
-	  	printf("right not in reach");
+	  	printf("right not in reach\n");
   		theta_R0 = arm_home_predator[RIGHT][0];
 	   	theta_R1 = arm_home_predator[RIGHT][1];
 	  }
