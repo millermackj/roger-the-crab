@@ -233,7 +233,7 @@ Robot* roger;
 	  matXvec(bTw, ref_w, ref_b);
 
 	  if(t%50 == 0)
-	  	printf("ballX_b: %f, ballY_b: %f", ref_b[X], ref_b[Y]);
+	  	printf("ballX_w: %f, ballY_w: %f\nballX_b: %f, ballY_b: %f\n", ref_w[X], ref_w[Y],ref_b[X], ref_b[Y]);
 
 		//check if in reach (inv_kinematics will return TRUE)
 	  int left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y],&theta_L0, &theta_L1);
