@@ -91,11 +91,13 @@ double *x, *y;
 
 	// use eye angles to triangulate on ball
 	double slope_L, slope_R;
-	slope_L = atan(roger->eye_theta[LEFT]  - error_eye[LEFT]);
-	slope_R  = atan(roger->eye_theta[RIGHT] - error_eye[RIGHT]);
+	slope_L = tan(roger->eye_theta[LEFT]  - error_eye[LEFT]);
+	slope_R  = tan(roger->eye_theta[RIGHT] - error_eye[RIGHT]);
 
 	// calculate coordinates of red ball in base frame
-	ref_b[0] = (2.0*BASELINE)/(slope_R-slope_L);
+	if(fabs(slope_R - slope_L) > 0.0) // avoid divide by zero
+		ref_b[0] = (2.0*BASELINE)/(slope_R-slope_L);
+	else ref_b[0] = 100;
 	ref_b[1] = slope_L * ref_b[0] + BASELINE;
 	ref_b[2] = 0;
 	ref_b[3] = 1;

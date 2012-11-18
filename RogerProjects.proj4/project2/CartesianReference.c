@@ -212,7 +212,7 @@ int button;		//mouse button
 //	theRobot = roger;
   double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4], theta0, theta1;
   int body_side = 0;
-	
+	if(t%50 == 0)
   printf("Arm goal input - x: %4.3f, y: %4.3f - button: %d\n", x, y, button);
 
   //COMPLETE FOR PROJECT #2
