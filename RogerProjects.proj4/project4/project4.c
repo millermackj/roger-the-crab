@@ -261,7 +261,9 @@ Robot* roger;
 	
 // ...
 		child_states[0] = macro0();
-		child_states[1] = primitive2;
+		child_states[1] = primitive2();
+		child_states[2] = 0;
+
 
 
 //PROJECT4 end
