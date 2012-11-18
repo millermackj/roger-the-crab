@@ -33,22 +33,22 @@ Robot* roger;
 
 	double ball_x, ball_y;
 	int ur, ul;
-	if (compute_average_red_pixel(roger, &ur, &ul) == TRUE)
-	{
-		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
-		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
-	}
+//	if (compute_average_red_pixel(roger, &ur, &ul) == TRUE)
+//	{
+//		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
+//		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
+//	}
 
-	state = macro0(roger);
+//	state = macro0(roger);
 
 	//comment in to test primitive controller 2
 	//state = primitive2(roger);
 
 	//comment in to test primitive controller 3
-	//state = primitive3(roger);
+	state = primitive3(roger);
 
 	//execute the search track controller
-	state = macro1(roger);
+	//state = macro1(roger);
 
 	//printf("Current controller state: %d \n", state);
 
