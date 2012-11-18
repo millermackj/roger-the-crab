@@ -237,6 +237,8 @@ Robot* roger;
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
+			if(t%50 == 0)
+				printf("left ok\n");
 	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])*(ball_x-roger->arm_theta[LEFT][0])
 	  			+ (ball_y - roger->arm_theta[LEFT][1])*(ball_y - roger->arm_theta[LEFT][1]);
 		}
