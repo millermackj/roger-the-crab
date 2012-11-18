@@ -33,9 +33,8 @@ extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
 extern char filename[32];
 int firstRun = TRUE;
-
-
-
+double arm_home[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
+			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
 
 project3_control(roger)
 Robot* roger;
@@ -195,10 +194,10 @@ Robot* roger;
 	  roger->eyes_setpoint[LEFT] = roger->eyes_setpoint[RIGHT] = heading_error_base/2.0;
 
 	  // place arms in home position
-		roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
-		roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
-		roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
-		roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
+		roger->arm_setpoint[LEFT][0] = arm_home[LEFT][0];
+		roger->arm_setpoint[LEFT][1] = arm_home[LEFT][1];
+		roger->arm_setpoint[RIGHT][0] = arm_home[RIGHT][0];
+		roger->arm_setpoint[RIGHT][1] = arm_home[RIGHT][1];
 
 //	  if (t %10 == 0)
 //	  	printf("time:%.3f\tsearch_heading: %f\theading: %f\theading error: %f\n", t/1000.0,search_heading, current_heading, heading_error_base);
