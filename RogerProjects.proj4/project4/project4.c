@@ -149,7 +149,7 @@ Robot* roger;
 
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
 
-		define_base_setpoint(roger, ball_x, ball_y);
+		define_base_setpoint(roger, ball_x - R_OBJ - 2.0*R_TACTILE, ball_y);
 
 		// keep the eyes tracking the ball
 		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
