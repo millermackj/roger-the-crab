@@ -144,7 +144,7 @@ Robot* roger;
 	  // construct the homogeneous transform from the world to the mobile base
 	  construct_wTb(roger->base_position, wTb);
 	  // position feedback
-	  inv_transform(wTb, bTw);
+	  //inv_transform(wTb, bTw);
 
 	  //calculate heading error to desired heading 'search_heading'
 
@@ -286,12 +286,12 @@ Robot* roger;
 	//PROJECT3: 
 
 		//calculate errors for eyes and base
-		if((abs(ul - 63) < 2 && abs(ur - 63) < 2)){
+		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
 			error_eye[LEFT] = error_eye[RIGHT] = 0;
 		}
 		else{
 		  error_eye[LEFT] = (NPIXELS/2 - ul) * RAD_PER_PIXEL;
-		  error_eye[RIGHT] =(NPIXELS/2 - ur) * RAD_PER_PIXEL;
+		  error_eye[RIGHT]= (NPIXELS/2 - ur) * RAD_PER_PIXEL;
 		}
 //	if(t%10 == 0){
 //		printf("err_L: %lf\t err_R: %lf\n", error_eye[LEFT], error_eye[RIGHT]);
@@ -302,7 +302,8 @@ Robot* roger;
 		  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
 		  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
 
-		  error_base = -(roger->eye_theta[LEFT]+roger->eye_theta[RIGHT])/2.0;
+		  error_base = -(roger->eye_theta[LEFT]-error_eye[LEFT]+roger->eye_theta[RIGHT]- error_eye[RIGHT])/2.0;
+
 
 	  	// ensure -pi < error < +pi
 		  if(error_base > M_PI)
