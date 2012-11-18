@@ -35,11 +35,11 @@ Robot* roger;
 
 	double ball_x, ball_y;
 	int ur, ul;
-//	if (compute_average_red_pixel(roger, &ur, &ul) == TRUE)
-//	{
-//		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
-//		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
-//	}
+	if ( t % 50 == 0 && compute_average_red_pixel(roger, &ur, &ul) == TRUE)
+	{
+		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
+		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
+	}
 
 //	state = macro0(roger);
 
@@ -246,6 +246,7 @@ Robot* roger;
   		theta_L0 = arm_home_predator[LEFT][0];
 	   	theta_L1 = arm_home_predator[LEFT][1];
 		}
+
 	  if(right_OK){ // is ball within reach of right hand?
 	  	// calculate distance from hand to ball
 	  	dist_R = (ball_x-roger->arm_theta[RIGHT][0])*(ball_x-roger->arm_theta[RIGHT][0])
