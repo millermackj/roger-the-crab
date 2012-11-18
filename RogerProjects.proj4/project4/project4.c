@@ -243,10 +243,8 @@ Robot* roger;
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
-	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])*(ball_x-roger->arm_theta[LEFT][0])
-	  			+ (ball_y - roger->arm_theta[LEFT][1])*(ball_y - roger->arm_theta[LEFT][1]);
 	  	if(t % 50 == 0)
-	  	printf("left within reach: %f m\n", dist_R);
+	  	printf("left within reach\n");
 		}
 		else{ // left arm out of reach
   		// bring (or keep) left arm home
@@ -258,10 +256,8 @@ Robot* roger;
 
 	  if(right_OK){ // is ball within reach of right hand?
 	  	// calculate distance from hand to ball
-	  	dist_R = (ball_x-roger->arm_theta[RIGHT][0])*(ball_x-roger->arm_theta[RIGHT][0])
-	  			+ (ball_y - roger->arm_theta[RIGHT][1])*(ball_y - roger->arm_theta[RIGHT][1]);
 	  	if(t % 50 == 0)
-	  	printf("right within reach: %f m\n", dist_R);
+	  	printf("right within reach\n");
 	  }
 	  else{
   		// bring (or keep) right arm home
@@ -290,6 +286,7 @@ Robot* roger;
 		//calculate arm endpoint force vector length			
 		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
 		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
+
 		if(!hand_force[LEFT] || !hand_force[RIGHT])
 			state = CONVERGED;
 
