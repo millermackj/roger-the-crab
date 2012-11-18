@@ -48,21 +48,21 @@ Robot* roger;
 //PROJECT 3: You can comment in/out one of the primitive controllers below to developping /debugging them. 
 
 	// create a new output file on first loop
-	if(firstRun==TRUE){
-		firstRun = FALSE;
-		if(writefile != NULL){// test if the current output file is open
-			// close the open file
-			fclose(writefile);
-			writefile = NULL;
-		}
-		// create new filename
-		sprintf(filename, "outfile_%d.txt", test_num);
-		// open a new output file
-		writefile = fopen(filename, "w");
-
-		fprintf(writefile, "Time\tBase Heading\tR_Eye\tL_Eye\tSearch Heading\n"); // write header to file
-		test_num++; // increment test counter
-	}
+//	if(firstRun==TRUE){
+//		firstRun = FALSE;
+//		if(writefile != NULL){// test if the current output file is open
+//			// close the open file
+//			fclose(writefile);
+//			writefile = NULL;
+//		}
+//		// create new filename
+//		sprintf(filename, "outfile_%d.txt", test_num);
+//		// open a new output file
+//		writefile = fopen(filename, "w");
+//
+//		fprintf(writefile, "Time\tBase Heading\tR_Eye\tL_Eye\tSearch Heading\n"); // write header to file
+//		test_num++; // increment test counter
+//	}
 	
 	prev_state = state;
 	//comment in to test primitive controller 0
@@ -74,14 +74,14 @@ Robot* roger;
 	//execute the combined search track controller
 	state = macro0(roger);
 
-	if (t % 5 == 0 && writefile != NULL){
-		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf\t%lf\n", t/1000.0, roger->base_position[2],
-				roger->eye_theta[0], roger->eye_theta[1], sHeading);
-		// print time, base heading, and eye angles
-	}
+//	if (t % 5 == 0 && writefile != NULL){
+//		fprintf(writefile, "%.3lf\t%lf\t%lf\t%lf\t%lf\n", t/1000.0, roger->base_position[2],
+//				roger->eye_theta[0], roger->eye_theta[1], sHeading);
+//		// print time, base heading, and eye angles
+//	}
 
 
-	//printf("Current controller state: %d, %s \n", state, statenames[state]);
+	printf("Current controller state: %d, %s \n", state, statenames[state]);
 
 
 
