@@ -227,8 +227,8 @@ Robot* roger;
 
 	  matXvec(bTw, ref_w, ref_b);
 		//check if in reach (inv_kinematics will return TRUE)
-	  int left_OK = inv_kinematics(LEFT, ref_b[0],ref_b[1],&theta_L0, &theta_L1);
-	  int right_OK = inv_kinematics(RIGHT, ref_b[0],ref_b[1],&theta_R0, &theta_R1);
+	  int left_OK = inv_kinematics(roger, LEFT, ref_b[0],ref_b[1],&theta_L0, &theta_L1);
+	  int right_OK = inv_kinematics(roger, RIGHT, ref_b[0],ref_b[1],&theta_R0, &theta_R1);
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball

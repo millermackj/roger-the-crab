@@ -34,7 +34,8 @@ Robot* theRobot;
 
 /* === Need to be done in Project 2 === */
 /* Inverse Kinematics function */
-int inv_kinematics(limb, x, y, theta1, theta2)
+int inv_kinematics(roger, limb, x, y, theta1, theta2)
+Robot* roger;
 int limb;
 double x, y;
 double *theta1, *theta2;
@@ -61,10 +62,10 @@ double *theta1, *theta2;
 		theta1_minus = atan2(y,x) - alpha_minus;
 
 // calculate total joint swing and pick minimum
-		double dist_plus = fabs(fmod(theta1_plus-theRobot->arm_theta[limb][0],M_PI))
-				+ fabs(fmod(theta2_plus-theRobot->arm_theta[limb][1],M_PI));
-		double dist_minus = fabs(fmod(theta1_minus-theRobot->arm_theta[limb][0],M_PI))
-						+ fabs(fmod(theta2_minus-theRobot->arm_theta[limb][1],M_PI));
+		double dist_plus = fabs(fmod(theta1_plus-roger->arm_theta[limb][0],M_PI))
+				+ fabs(fmod(theta2_plus-roger->arm_theta[limb][1],M_PI));
+		double dist_minus = fabs(fmod(theta1_minus-roger->arm_theta[limb][0],M_PI))
+						+ fabs(fmod(theta2_minus-roger->arm_theta[limb][1],M_PI));
 		if (dist_plus < dist_minus){
 			*theta1 = theta1_plus;
 			*theta2 = theta2_plus;
@@ -208,7 +209,7 @@ double x;		//x value
 double y;		//y value
 int button;		//mouse button
 {	
-	theRobot = roger;
+//	theRobot = roger;
   double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4], theta0, theta1;
   int body_side = 0;
 	
@@ -241,7 +242,7 @@ int button;		//mouse button
   // transform reference coordinates base frame
   matXvec(bTw, ref_w, ref_b);
 
-  if(inv_kinematics(body_side, ref_b[X], ref_b[Y], &theta0, &theta1)){
+  if(inv_kinematics(roger, body_side, ref_b[X], ref_b[Y], &theta0, &theta1)){
 //  	printf("\narm: %d\ttheta0: %lf\ttheta1: %lf", body_side, theta0, theta1);
   	roger->arm_setpoint[body_side][0] = theta0;
   	roger->arm_setpoint[body_side][1] = theta1;
