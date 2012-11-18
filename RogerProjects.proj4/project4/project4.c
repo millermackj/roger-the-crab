@@ -47,10 +47,10 @@ Robot* roger;
 	//state = primitive2(roger);
 
 	//comment in to test primitive controller 3
-	state = primitive3(roger);
+	//state = primitive3(roger);
 
 	//execute the search track controller
-	//state = macro1(roger);
+	state = macro1(roger);
 
 	//printf("Current controller state: %d \n", state);
 
@@ -91,6 +91,8 @@ double *x, *y;
 
 	// use eye angles to triangulate on ball
 	double slope_L, slope_R;
+	double angle = roger->eye_theta[LEFT]  - error_eye[LEFT];
+
 	slope_L = tan(roger->eye_theta[LEFT]  - error_eye[LEFT]);
 	slope_R  = tan(roger->eye_theta[RIGHT] - error_eye[RIGHT]);
 
