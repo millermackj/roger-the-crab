@@ -33,7 +33,7 @@
 #define KD_ARM                12
 
 #define KP_EYE                 4.0
-#define KD_EYE                 .05
+#define KD_EYE                 .07
 
 /***** SOR relaxation parameters ********************************/
 #define THRESHOLD              0.00000001
