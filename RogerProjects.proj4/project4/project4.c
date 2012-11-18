@@ -22,6 +22,8 @@ enum {
 	CONVERGED
 };
 
+extern long unsigned int t;
+
 int randomize_ball_position = FALSE;
 
 project4_control(roger)
