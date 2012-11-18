@@ -100,7 +100,7 @@ double *x, *y;
 	if(fabs(slope_R - slope_L) > 0.0) // avoid divide by zero
 		ref_b[0] = (2.0*BASELINE)/(slope_R-slope_L);
 	else ref_b[0] = 100;
-	ref_b[1] = slope_R * ref_b[RIGHT] - BASELINE;
+	ref_b[1] = slope_L * ref_b[LEFT] + BASELINE;
 	ref_b[2] = 0;
 	ref_b[3] = 1;
 
