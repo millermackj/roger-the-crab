@@ -196,7 +196,6 @@ Robot* roger;
 	//check if ball is in view
 	if (compute_average_red_pixel(roger, &ur, &ul) == TRUE)
 	{		
-
 	  //------------------------------
 	  //PROJECT4: 
 	  // Being inside this if statement means that the ball is visible in both eyes at 'ul' and 'ur'
@@ -239,8 +238,6 @@ Robot* roger;
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
-			if(t%50 == 0)
-				printf("left ok\n");
 	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])*(ball_x-roger->arm_theta[LEFT][0])
 	  			+ (ball_y - roger->arm_theta[LEFT][1])*(ball_y - roger->arm_theta[LEFT][1]);
 		}
@@ -262,6 +259,8 @@ Robot* roger;
 		
 	  if(!left_OK && !right_OK)
 	  	state = NO_REFERENCE; // arm is out of reach
+	  else
+			state = UNCONVERGED;
 
 	  // by default, whichever hand(s) can reach the ball will bop it.
 
@@ -277,21 +276,11 @@ Robot* roger;
 		//calculate arm endpoint force vector length			
 		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
 		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
-		//...
-			
-		
+		if(!hand_force[LEFT] || !hand_force[RIGHT])
+			state = CONVERGED;
 
 	  //PROJECT4 end
 	  //---------------------	
-	}
-
-	if (state == NO_REFERENCE)
-	{
-		//nothing to hit -> send arms to ready position
-	   roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
-	   roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
-	   roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
-	   roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];		
 	}
 	
 	return state;
