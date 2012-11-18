@@ -33,13 +33,13 @@ Robot* roger;
 	
 	//comment in to test eye_triangulation in combination with left mouse click in user input mode!
 
-	double ball_x, ball_y;
-	int ur, ul;
-	if ( t % 50 == 0 && compute_average_red_pixel(roger, &ur, &ul) == TRUE)
-	{
-		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
-		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
-	}
+//	double ball_x, ball_y;
+//	int ur, ul;
+//	if ( t % 50 == 0 && compute_average_red_pixel(roger, &ur, &ul) == TRUE)
+//	{
+//		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
+//		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
+//	}
 
 //	state = macro0(roger);
 
@@ -466,7 +466,7 @@ double *fx, *fy;
 
 				if ( fabs(dist[X]) < R_TACTILE + XDELTA && fabs(dist[Y]) < R_TACTILE + YDELTA )
 				{
-					printf("Touching obstacle. \n");
+					//printf("Touching obstacle. \n");
 					return FALSE;
 				}
 			}
