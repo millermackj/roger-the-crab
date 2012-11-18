@@ -244,8 +244,8 @@ Robot* roger;
 	  int left_OK = 0;
 	  int right_OK = 0;
 	  if(ref_b[0] > BASE_CONTROL_OFFSET){
-			left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y],&theta_L0, &theta_L1);
-			right_OK = inv_kinematics(roger, RIGHT, ref_b[X],ref_b[Y],&theta_R0, &theta_R1);
+			left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y]+R_TACTILE,&theta_L0, &theta_L1);
+			right_OK = inv_kinematics(roger, RIGHT, ref_b[X],ref_b[Y]-R_TACTILE,&theta_R0, &theta_R1);
 	  }
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
@@ -335,8 +335,14 @@ Robot* roger;
 
 	
 // ...
+	if(child_states[2] == UNCONVERGED){
+		child_states[0] = DONT_CARE;
+		child_states[1] = DONT_CARE;
+		child_states[2] = primitive3(roger);
+	}
+	else{
 		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
-			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is moving towards ball
+			if((child_states[1] = primitive2(roger)) == CONVERGED) // base is upon ball
 				child_states[2] = primitive3(roger); // try to punch the ball
 			else
 				child_states[2] = DONT_CARE; // don't try to punch the ball
@@ -345,6 +351,8 @@ Robot* roger;
 			child_states[1] = DONT_CARE;
 			child_states[2] = DONT_CARE;
 		}
+	}
+
 
 
 //PROJECT4 end
