@@ -302,8 +302,8 @@ Robot* roger;
 		  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
 		  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
 
-		  //error_base = -(roger->eye_theta[LEFT]-error_eye[LEFT]+roger->eye_theta[RIGHT]- error_eye[RIGHT])/2.0;
-error_base  =0;
+		  error_base = -(roger->eye_theta[LEFT]-error_eye[LEFT]+roger->eye_theta[RIGHT]- error_eye[RIGHT])/2.0;
+
 
 	  	// ensure -pi < error < +pi
 		  if(error_base > M_PI)
