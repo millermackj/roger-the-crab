@@ -240,9 +240,13 @@ Robot* roger;
 			// calculate distance from hand to ball
 	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])*(ball_x-roger->arm_theta[LEFT][0])
 	  			+ (ball_y - roger->arm_theta[LEFT][1])*(ball_y - roger->arm_theta[LEFT][1]);
+	  	if(t % 50 == 0)
+	  	printf("left within reach: %f m\n", dist_R);
 		}
 		else{ // left arm out of reach
   		// bring (or keep) left arm home
+			if(t % 50 == 0)
+			printf("left not in reach");
   		theta_L0 = arm_home_predator[LEFT][0];
 	   	theta_L1 = arm_home_predator[LEFT][1];
 		}
@@ -251,9 +255,13 @@ Robot* roger;
 	  	// calculate distance from hand to ball
 	  	dist_R = (ball_x-roger->arm_theta[RIGHT][0])*(ball_x-roger->arm_theta[RIGHT][0])
 	  			+ (ball_y - roger->arm_theta[RIGHT][1])*(ball_y - roger->arm_theta[RIGHT][1]);
+	  	if(t % 50 == 0)
+	  	printf("right within reach: %f m\n", dist_R);
 	  }
 	  else{
   		// bring (or keep) right arm home
+	  	if(t % 50 == 0)
+	  	printf("right not in reach");
   		theta_R0 = arm_home_predator[RIGHT][0];
 	   	theta_R1 = arm_home_predator[RIGHT][1];
 	  }
