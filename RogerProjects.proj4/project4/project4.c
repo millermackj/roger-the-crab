@@ -224,6 +224,11 @@ Robot* roger;
 	  inv_transform(wTb, bTw);
 
 		// convert ball coordinates to base coordinates
+	  ref_w[0] = ball_x;
+	  ref_w[1] = ball_y;
+	  ref_w[2] = 0.0;
+	  ref_w[3] = 1.0;
+
 
 	  matXvec(bTw, ref_w, ref_b);
 		//check if in reach (inv_kinematics will return TRUE)
