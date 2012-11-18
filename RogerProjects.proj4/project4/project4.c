@@ -65,7 +65,7 @@ int ur, ul;
 double *x, *y;
 {
 	
-	double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4],
+	double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4];
 //	double ball_b[2];
 //	double bb, Ltheta0, Ltheta1, Rtheta0, Rtheta1;
 //	double avg_theta, delta_y, gamma_l, gamma_r;
