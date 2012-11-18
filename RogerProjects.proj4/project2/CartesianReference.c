@@ -48,8 +48,8 @@ double *theta1, *theta2;
   else y += ARM_OFFSET;
   r2 = x*x + y*y;
   c2 = (r2 - LARM_1*LARM_1 - LARM_2*LARM_2)/(2.0*LARM_1*LARM_2);
-  if(fabs(c2) <= 1){
-  	s2_plus = sqrt(1-(c2*c2));
+  if(fabs(c2) <= 1.0){
+  	s2_plus = sqrt(1.0-(c2*c2));
   	s2_minus = -s2_plus;
   	theta2_plus = atan2(s2_plus, c2);
   	theta2_minus = atan2(s2_minus, c2);

@@ -237,7 +237,7 @@ Robot* roger;
 
 		//check if in reach (inv_kinematics will return TRUE)
 	  int left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y],&theta_L0, &theta_L1);
-	  int right_OK = inv_kinematics(roger, RIGHT, ref_b[Y],ref_b[X],&theta_R0, &theta_R1);
+	  int right_OK = inv_kinematics(roger, RIGHT, ref_b[X],ref_b[Y],&theta_R0, &theta_R1);
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
