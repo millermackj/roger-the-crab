@@ -65,9 +65,10 @@ int ur, ul;
 double *x, *y;
 {
 	
-	double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4], ball_b[2];
-	double bb, Ltheta0, Ltheta1, Rtheta0, Rtheta1;
-	double avg_theta, delta_y, gamma_l, gamma_r;
+	double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4],
+//	double ball_b[2];
+//	double bb, Ltheta0, Ltheta1, Rtheta0, Rtheta1;
+//	double avg_theta, delta_y, gamma_l, gamma_r;
 	double error_eye[2];
 
 	// construct the homogeneous transform from the world to the mobile base
@@ -144,7 +145,23 @@ Robot* roger;
 	  // inside of the map and including a margin to the border.
 
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
+
 		define_base_setpoint(roger, ball_x, ball_y);
+
+		// keep the eyes tracking the ball
+		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
+			error_eye[LEFT] = error_eye[RIGHT] = 0;
+		}
+		else{
+		  error_eye[LEFT] = (NPIXELS/2 - ul) * RAD_PER_PIXEL;
+		  error_eye[RIGHT]= (NPIXELS/2 - ur) * RAD_PER_PIXEL;
+		}
+
+		// assign eye setpoints
+	  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
+	  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
+
+
 	   //...
 
 
@@ -260,9 +277,10 @@ Robot* roger;
 
 	
 // ...
-		child_states[0] = macro0();
-		child_states[1] = primitive2();
-		child_states[2] = 0;
+		if((child_states[0] = macro0()) >= UNCONVERGED))
+			child_states[1] = primitive2();
+
+			child_states[2] = 0;
 
 
 
