@@ -81,7 +81,7 @@ Robot* roger;
 //	}
 
 
-	printf("Current controller state: %d, %s \n", state, statenames[state]);
+	printf("Current controller state: %s\n", statenames[state]);
 
 
 
@@ -194,9 +194,9 @@ Robot* roger;
 	  //adjust setpoints for eyes
 	  roger->eyes_setpoint[LEFT] = roger->eyes_setpoint[RIGHT] = heading_error_base/2.0;
 
-	  if (t %10 == 0)
-	  	printf("time:%.3f\tsearch_heading: %f\theading: %f\theading error: %f\n", t/1000.0,search_heading, current_heading, heading_error_base);
-	  //if arrived at the desired heading +- some delta, switch back to 'controller_state' 'SAMPLE'
+//	  if (t %10 == 0)
+//	  	printf("time:%.3f\tsearch_heading: %f\theading: %f\theading error: %f\n", t/1000.0,search_heading, current_heading, heading_error_base);
+//	  //if arrived at the desired heading +- some delta, switch back to 'controller_state' 'SAMPLE'
 	  //likewise set 'state' to 'CONVERGED' once heading is reached
 	  if (heading_error_base > -0.01 && heading_error_base < 0.01){
 	  	controller_state = SAMPLE;
@@ -279,8 +279,6 @@ Robot* roger;
 			return state;
 		}			
 		state = UNCONVERGED;
-
-
 
 	//-------------------------------
 	//PROJECT3: 
@@ -392,6 +390,9 @@ Robot* roger;
 //running the corresponding controller or by directly assigning it. Additionally, you need 
 //to set 'state' for each case. 
 
+
+	printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
+
 	//					      TRACK             SEARCH
 	switch (states_to_int(child_states, num_children))
 	{
@@ -413,9 +414,6 @@ Robot* roger;
 		case 3: // NO_REFERENCE, CONVERGED
 			child_states[0] = primitive0(roger);
 			child_states[1] = primitive1(roger);
-			if(child_states[1] == UNCONVERGED)
-				printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
-
 			state = NO_REFERENCE;
 			break;
 		case 4: // DONT_CARE, NO_REFERENCE
