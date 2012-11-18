@@ -39,7 +39,7 @@ Robot* roger;
 		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
 	}
 
-	//state = macro0(roger);
+	state = macro0(roger);
 
 	//comment in to test primitive controller 2
 	//state = primitive2(roger);
@@ -144,7 +144,7 @@ Robot* roger;
 	  // inside of the map and including a margin to the border.
 
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
-
+		define_base_setpoint(roger, ball_x, ball_y);
 	   //...
 
 
@@ -260,7 +260,8 @@ Robot* roger;
 
 	
 // ...
-
+		child_states[0] = macro0();
+		child_states[1] = primitive2;
 
 
 //PROJECT4 end
