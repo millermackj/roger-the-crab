@@ -228,11 +228,12 @@ Robot* roger;
 	  matXvec(bTw, ref_w, ref_b);
 		//check if in reach (inv_kinematics will return TRUE)
 	  int left_OK = inv_kinematics(LEFT, ref_b[0],ref_b[1],&theta_L0, &theta_L1);
-	  int right_OK = inv_kinematics(RIGHT, ref_b[0],ref_b[1],&theta_R0, &theta_R1)
+	  int right_OK = inv_kinematics(RIGHT, ref_b[0],ref_b[1],&theta_R0, &theta_R1);
 
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
-	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])^2 + (ball_y - roger->arm_theta[LEFT][0])^2;
+	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])*(ball_x-roger->arm_theta[LEFT][0])
+	  			+ (ball_y - roger->arm_theta[LEFT][1)*(ball_y - roger->arm_theta[LEFT][1]);
 		}
 		else{ // left arm out of reach
   		// bring (or keep) left arm home
@@ -241,7 +242,8 @@ Robot* roger;
 		}
 	  if(right_OK){ // is ball within reach of right hand?
 	  	// calculate distance from hand to ball
-	  	dist_R = (ball_x-roger->arm_theta[RIGHT][0])^2 + (ball_y - roger->arm_theta[RIGHT][0])^2;
+	  	dist_R = (ball_x-roger->arm_theta[RIGHT][0])*(ball_x-roger->arm_theta[RIGHT][0])
+	  			+ (ball_y - roger->arm_theta[RIGHT][1])*(ball_y - roger->arm_theta[RIGHT][1]);
 	  }
 	  else{
   		// bring (or keep) right arm home
