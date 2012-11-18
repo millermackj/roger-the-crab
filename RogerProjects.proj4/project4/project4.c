@@ -277,8 +277,8 @@ Robot* roger;
 
 	
 // ...
-		if((child_states[0] = macro0()) == CONVERGED)
-			child_states[1] = primitive2();
+		if((child_states[0] = macro0(roger)) == CONVERGED)
+			child_states[1] = primitive2(roger);
 		else
 			child_states[1] = DONT_CARE;
 
