@@ -233,7 +233,7 @@ Robot* roger;
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
 	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])*(ball_x-roger->arm_theta[LEFT][0])
-	  			+ (ball_y - roger->arm_theta[LEFT][1)*(ball_y - roger->arm_theta[LEFT][1]);
+	  			+ (ball_y - roger->arm_theta[LEFT][1])*(ball_y - roger->arm_theta[LEFT][1]);
 		}
 		else{ // left arm out of reach
   		// bring (or keep) left arm home
