@@ -28,7 +28,7 @@ Robot* roger;
 	static int state = 0;
 	
 	//comment in to test eye_triangulation in combination with left mouse click in user input mode!
-	/*
+
 	double ball_x, ball_y;
 	int ur, ul;
 	if (compute_average_red_pixel(roger, &ur, &ul) == TRUE)
@@ -36,7 +36,7 @@ Robot* roger;
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
 		printf("Ball location: %4.3f, %4.3f \n", ball_x, ball_y);
 	}
-	*/
+
 	//state = macro0(roger);
 
 	//comment in to test primitive controller 2
@@ -66,15 +66,44 @@ double *x, *y;
 	double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4], ball_b[2];
 	double bb, Ltheta0, Ltheta1, Rtheta0, Rtheta1;
 	double avg_theta, delta_y, gamma_l, gamma_r;
+	double error_eye[2];
+
+	// construct the homogeneous transform from the world to the mobile base
+  construct_wTb(roger->base_position, wTb);
+  // position feedback
+  inv_transform(wTb, bTw);
+
 
  // PROJECT4: Complete this method. Use inputs 'ul' and 'ur' together with eye angles to triangulate the 
  // red ball. The calculated position is in base frame and has to be converted to world frame and written 
  // into 'x' and 'y'.
 
+  //calculate errors for eyes
+	if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
+		error_eye[LEFT] = error_eye[RIGHT] = 0;
+	}
+	else{
+	  error_eye[LEFT] = (NPIXELS/2 - ul) * RAD_PER_PIXEL;
+	  error_eye[RIGHT]= (NPIXELS/2 - ur) * RAD_PER_PIXEL;
+	}
+
+	// use eye angles to triangulate on ball
+	double slope_L, slope_R;
+	slope_L = atan(roger->eye_theta[LEFT]  - error_eye[LEFT]);
+	slope_R  = atan(roger->eye_theta[RIGHT] - error_eye[RIGHT]);
+
+	// calculate coordinates of red ball in base frame
+	ref_b[0] = (2.0*BASELINE)/(slope_R-slope_L);
+	ref_b[1] = slope_L * ref_b[0] + BASELINE;
+	ref_b[2] = 0;
+	ref_b[3] = 1;
+
+	// transform coordinates to world frame
+  matXvec(wTb, ref_b, ref_w);
+	*x = ref_w[0];
+	*y = ref_w[1];
 
 
-	*x = 0.0;
-	*y = 0.0;
 
  //PROJECT4 end
  //---------------------	
