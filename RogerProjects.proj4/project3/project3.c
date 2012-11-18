@@ -194,6 +194,12 @@ Robot* roger;
 	  //adjust setpoints for eyes
 	  roger->eyes_setpoint[LEFT] = roger->eyes_setpoint[RIGHT] = heading_error_base/2.0;
 
+	  // place arms in home position
+		roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
+		roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
+		roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
+		roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
+
 //	  if (t %10 == 0)
 //	  	printf("time:%.3f\tsearch_heading: %f\theading: %f\theading error: %f\n", t/1000.0,search_heading, current_heading, heading_error_base);
 //	  //if arrived at the desired heading +- some delta, switch back to 'controller_state' 'SAMPLE'
