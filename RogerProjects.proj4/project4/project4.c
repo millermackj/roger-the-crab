@@ -264,7 +264,7 @@ Robot* roger;
 		}
 		init = FALSE;
 	}
-	printf("Macro state: %d (Search-Track: %d / Approach: %d / Punch: %d)\n", state, child_states[0], child_states[1], child_states[2]);
+	//printf("Macro state: %d (Search-Track: %d / Approach: %d / Punch: %d)\n", state, child_states[0], child_states[1], child_states[2]);
 
 
 //------------------------

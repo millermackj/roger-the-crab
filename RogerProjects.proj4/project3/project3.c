@@ -390,8 +390,8 @@ Robot* roger;
 //running the corresponding controller or by directly assigning it. Additionally, you need 
 //to set 'state' for each case. 
 
-if(t % 50 == 0)
-	printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
+//if(t % 50 == 0)
+//	printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
 
 	//					      TRACK             SEARCH
 	switch (states_to_int(child_states, num_children))
