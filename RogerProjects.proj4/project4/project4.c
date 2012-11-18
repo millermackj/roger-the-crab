@@ -73,9 +73,6 @@ double *x, *y;
 
 	// construct the homogeneous transform from the world to the mobile base
   construct_wTb(roger->base_position, wTb);
-  // position feedback
-  inv_transform(wTb, bTw);
-
 
  // PROJECT4: Complete this method. Use inputs 'ul' and 'ur' together with eye angles to triangulate the 
  // red ball. The calculated position is in base frame and has to be converted to world frame and written 
@@ -161,12 +158,6 @@ Robot* roger;
 	  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
 	  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
 
-
-	   //...
-
-
-
-
      //PROJECT4 end
 	  //---------------------	
 	}
@@ -189,7 +180,8 @@ Robot* roger;
 	int ul, ur;
 	double error_eye[2];
 	double arm_force[2];
-	double theta0, theta1;
+	double theta_L0, theta_L1, theta_R0, theta_R1;
+	double dist_L, dist_R; // distance from hand to ball
 	int hand_force[2];
 	double fx, fy;
 	static int count = 0; 
@@ -217,14 +209,59 @@ Robot* roger;
 		//triangulate the ball location
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);		
 	
-		//...
-	
+		// calculate eye-error
+		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
+			error_eye[LEFT] = error_eye[RIGHT] = 0;
+		}
+		else{
+		  error_eye[LEFT] = (NPIXELS/2 - ul) * RAD_PER_PIXEL;
+		  error_eye[RIGHT]= (NPIXELS/2 - ur) * RAD_PER_PIXEL;
+		}
 
+		// construct the homogeneous transform from the world to the mobile base
+	  construct_wTb(roger->base_position, wTb);
+	  // position feedback
+	  inv_transform(wTb, bTw);
+
+		// convert ball coordinates to base coordinates
+
+	  matXvec(bTw, ref_w, ref_b);
 		//check if in reach (inv_kinematics will return TRUE)
+	  int left_OK = inv_kinematics(LEFT, ref_b[0],ref_b[1],&theta_L0, &theta_L1);
+	  int right_OK = inv_kinematics(RIGHT, ref_b[0],ref_b[1],&theta_R0, &theta_R1)
+
+		if(left_OK){ // is ball within reach of left hand?
+			// calculate distance from hand to ball
+	  	dist_L = (ball_x-roger->arm_theta[LEFT][0])^2 + (ball_y - roger->arm_theta[LEFT][0])^2;
+		}
+		else{ // left arm out of reach
+  		// bring (or keep) left arm home
+  		theta_L0 = arm_home_predator[LEFT][0];
+	   	theta_L1 = arm_home_predator[LEFT][1];
+		}
+	  if(right_OK){ // is ball within reach of right hand?
+	  	// calculate distance from hand to ball
+	  	dist_R = (ball_x-roger->arm_theta[RIGHT][0])^2 + (ball_y - roger->arm_theta[RIGHT][0])^2;
+	  }
+	  else{
+  		// bring (or keep) right arm home
+  		theta_R0 = arm_home_predator[RIGHT][0];
+	   	theta_R1 = arm_home_predator[RIGHT][1];
+	  }
 		
+	  if(!left_OK && !right_OK)
+	  	state = NO_REFERENCE; // arm is out of reach
+
+	  // by default, whichever hand(s) can reach the ball will bop it.
+
+	  roger->arm_setpoint[LEFT][0] = theta_L0;
+  	roger->arm_setpoint[LEFT][1] = theta_L1;
+  	roger->arm_setpoint[RIGHT][0] = theta_R0;
+  	roger->arm_setpoint[RIGHT][1] = theta_R1;
 		
 		//calculate arm endpoint force vector length			
-		//hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
+		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
+		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
 		//...
 			
 		
@@ -277,13 +314,16 @@ Robot* roger;
 
 	
 // ...
-		if((child_states[0] = macro0(roger)) >= UNCONVERGED)
-			child_states[1] = primitive2(roger);
-		else
+		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
+			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is moving towards ball
+				child_states[2] = primitive3(roger); // try to punch the ball
+			else
+				child_states[2] = DONT_CARE; // don't try to punch the ball
+		}
+		else{ // ball is not in sight
 			child_states[1] = DONT_CARE;
-
-			child_states[2] = 0;
-
+			child_states[2] = DONT_CARE;
+		}
 
 
 //PROJECT4 end
