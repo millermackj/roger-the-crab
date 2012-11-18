@@ -266,6 +266,10 @@ Robot* roger;
   	roger->arm_setpoint[RIGHT][0] = theta_R0;
   	roger->arm_setpoint[RIGHT][1] = theta_R1;
 		
+		// assign eye setpoints
+	  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
+	  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
+
 		//calculate arm endpoint force vector length			
 		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
 		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
