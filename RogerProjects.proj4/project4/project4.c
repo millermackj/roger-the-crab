@@ -261,7 +261,7 @@ Robot* roger;
 
 		// check if ball has entered punch zone
 	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 2.0*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
-	  		&& fabs(ref_b[Y]) < R_OBJ){
+	  		&& fabs(ref_b[Y]) < 0.5*R_OBJ){
 	  	isPunching = 1;
 	  	punch_time = 1;
 	  	punch_limb = !punch_limb; // alternate punching arms
