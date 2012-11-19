@@ -149,7 +149,12 @@ Robot* roger;
 
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);
 
-		define_base_setpoint(roger, ball_x - R_OBJ - 2.0*R_TACTILE, ball_y);
+		define_base_setpoint(roger, ball_x, ball_y);
+
+		// compute base error and set converged if error's small enough
+		if(fabs(ball_x - roger->base_setpoint[X]) < R_OBJ + BASE_CONTROL_OFFSET + 0.08
+				&& fabs(ball_y - roger->base_setpoint[Y]) < 0.01)
+			state = CONVERGED;
 
 		// keep the eyes tracking the ball
 		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
