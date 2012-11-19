@@ -198,7 +198,7 @@ Robot* roger;
 	int hand_force[2];
 	double fx, fy;
 	static int punch_limb = LEFT; // arm to use for punching
-
+	static int made_contact = 0;
 	static double punch_vector[2][4] = {{1.5*LARM_1, -LARM_1, 0 ,1.0}, {1.5*LARM_1, LARM_1, 0 , 1.0}};
 	static double home_vector[2][4] = {{0.25, 0.2,0,1.0},{0.25,-0.2,0,1.0}};
 	double punch_vector_w[4];
@@ -307,8 +307,10 @@ Robot* roger;
 				// stop punching
 				isPunching = 0;
 				state = CONVERGED;
-		  	punch_limb = !punch_limb; // alternate punching arms
-
+				if(made_contact){
+					punch_limb = !punch_limb; // alternate punching arms
+					made_contact = 0;
+				}
 	  	}
 
 	  }
@@ -359,11 +361,11 @@ Robot* roger;
 
 
 //		//calculate arm endpoint force vector length
-//		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
-//		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
-//
-//		if(!hand_force[LEFT] || !hand_force[RIGHT])
-//			state = CONVERGED;
+		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
+		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
+
+		if(!hand_force[punch_limb])
+			made_contact = 1;;
 
 	  //PROJECT4 end
 	  //---------------------	
