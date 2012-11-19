@@ -219,6 +219,7 @@ Robot* roger;
 		//triangulate the ball location
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);		
 	
+		define_base_setpoint(roger, ball_x, ball_y);
 		// calculate eye-error
 		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
 			error_eye[LEFT] = error_eye[RIGHT] = 0;
