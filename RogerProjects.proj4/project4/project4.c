@@ -249,8 +249,8 @@ Robot* roger;
 	  int left_OK = 0;
 	  int right_OK = 0;
 	  if(ref_b[X] > BASE_CONTROL_OFFSET && ref_b[Y] < BASE_CONTROL_OFFSET){
-			left_OK = inv_kinematics(roger, LEFT, ref_b[X]+R_OBJ,ref_b[Y]+R_TACTILE,&theta_L0, &theta_L1);
-			right_OK = inv_kinematics(roger, RIGHT, ref_b[X]+R_OBJ,ref_b[Y]-R_TACTILE,&theta_R0, &theta_R1);
+			left_OK = inv_kinematics(roger, LEFT, ref_b[X]+R_OBJ,ref_b[Y],&theta_L0, &theta_L1);
+			right_OK = inv_kinematics(roger, RIGHT, ref_b[X]+R_OBJ,ref_b[Y],&theta_R0, &theta_R1);
 	  }
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
