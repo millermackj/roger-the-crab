@@ -275,7 +275,7 @@ Robot* roger;
 	  	endpoint_pos(roger,punch_limb, &x, &y);
 
 	  	// calculate unit vector pointing from punching hand to center of ball
-	  	vector_mag = sqrt(SQR[ball_x - x]+SQR[ball_y - y]);
+	  	vector_mag = sqrt(SQR(ball_x - x)+SQR(ball_y - y));
 	  	punch_vector[punch_limb][X] = (ball_x - x) / vector_mag;
 	  	punch_vector[punch_limb][Y] = (ball_y - y) / vector_mag;
 
