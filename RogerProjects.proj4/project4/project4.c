@@ -188,6 +188,7 @@ Robot* roger;
 {
 	double ref_b[4], wTb[4][4], bTw[4][4], ref_w[4];
 	double ball_x, ball_y;
+	double ballPos_w[4] = {0,0,0,1.0};
 	int ul, ur;
 	double error_eye[2];
 	double arm_force[2];
@@ -224,10 +225,10 @@ Robot* roger;
      // contact is occuring, otherwise FALSE.
 
 		//triangulate the ball location
-		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);		
+		eye_triangulate(roger, ur, ul, &(ballPos_w[X]), &(ballPos_w[Y]);
 	
 		// continue chasing ball with base
-		define_base_setpoint(roger, ball_x, ball_y);
+		define_base_setpoint(roger, ballPos_w[X], ballPos_w[Y]);
 
 		// calculate eye-error
 		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
@@ -247,14 +248,8 @@ Robot* roger;
 	  // position feedback
 	  inv_transform(wTb, bTw);
 
-	  // ball coordinates in world frame
-	  ref_w[0] = ball_x;
-	  ref_w[1] = ball_y;
-	  ref_w[2] = 0.0;
-	  ref_w[3] = 1.0;
-
 		// convert ball coordinates to base coordinates
-	  matXvec(bTw, ref_w, ref_b);
+	  matXvec(bTw, ballPos_w, ref_b);
 
 //	  if(t%50 == 0)
 //	  	printf("ballX_w: %f, ballY_w: %f\nballX_b: %f, ballY_b: %f\n", ref_w[X], ref_w[Y],ref_b[X], ref_b[Y]);
@@ -270,23 +265,24 @@ Robot* roger;
 	  	punch_time = 1;
 	  }
 	  if(isPunching){
-	  	double x, y, vector_mag;
-	  	// position of punching hand
-	  	endpoint_pos(roger,punch_limb, &x, &y);
+	  	double handPos_w[4] = {0,0,0,1.0};
+	  	double handPos_b[4];
+	  	double vector_mag;
+	  	// position of punching hand in world coordinates
+	  	endpoint_pos(roger, punch_limb, &(handPos_w[X]), &(handPos_w[Y]));
+	  	// get hand position in base coordinates
+	  	matXvec(bTw, handPos_w, handPos_b);
 
 	  	// calculate unit vector pointing from punching hand to center of ball
-	  	vector_mag = sqrt(SQR(ball_x - x)+SQR(ball_y - y));
-	  	punch_vector_w[X] = (ball_x - x) / vector_mag;
-	  	punch_vector_w[Y] = (ball_y - y) / vector_mag;
-	  	punch_vector_w[2] = 0;
-	  	punch_vector_w[3] = 1.0;
+	  	vector_mag = sqrt(SQR(ref_b[X] - handPos_b[X])+SQR(ref_b[Y] - handPos_b[Y]));
 
-	  	matXvec(bTw, punch_vector_w, punch_vector[punch_limb]);
+	  	punch_vector[punch_limb][X] = 2.0*R_OBJ*(ref_b[X] - handPos_b[X]) / vector_mag;
+	  	punch_vector[punch_limb][Y] = 2.0*R_OBJ*(ref_b[Y] - handPos_b[Y]) / vector_mag;
 
 		  // calculate inverse kinematics for next step of punch trajectory
 	  	if(inv_kinematics(roger, punch_limb,
-	  			home_vector[punch_limb][X] + punch_vector[punch_limb][X] * 1.5*LARM_1 * punch_time/punch_duration,
-	  			home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * 1.5*LARM_1 * punch_time/punch_duration,
+	  			home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration,
+	  			home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * punch_time/punch_duration,
 	  			&theta0, &theta1)){
 	  		// set the arm setpoints
 			  roger->arm_setpoint[punch_limb][0] = theta0;
