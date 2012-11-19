@@ -297,15 +297,9 @@ Robot* roger;
 	  	punch_time++;
 	  	state = UNCONVERGED;
 
-	  	// pull punch if ball is out of range
-	  	if(!(fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
-	  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ)){
-				roger->arm_setpoint[punch_limb][0] = arm_home_predator[punch_limb][0];
-				roger->arm_setpoint[punch_limb][1] = arm_home_predator[punch_limb][1];
-	  	}
-
-	  	// check if punch is done
-	  	if((double)punch_time > punch_duration){
+	  	// check if punch is done or ball is out of punching range
+	  	if((double)punch_time > punch_duration || !(fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
+		  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ)){
 	  		// reset arm to home position
 				roger->arm_setpoint[punch_limb][0] = arm_home_predator[punch_limb][0];
 				roger->arm_setpoint[punch_limb][1] = arm_home_predator[punch_limb][1];
