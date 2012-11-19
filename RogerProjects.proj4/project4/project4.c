@@ -293,8 +293,6 @@ Robot* roger;
 	  	}
 	  }
 
-
-
 	  //check if in reach (inv_kinematics will return TRUE)
 //	  int left_OK = 0;
 //	  int right_OK = 0;
@@ -340,12 +338,12 @@ Robot* roger;
 		
 
 
-		//calculate arm endpoint force vector length			
-		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
-		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
-
-		if(!hand_force[LEFT] || !hand_force[RIGHT])
-			state = CONVERGED;
+//		//calculate arm endpoint force vector length
+//		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
+//		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
+//
+//		if(!hand_force[LEFT] || !hand_force[RIGHT])
+//			state = CONVERGED;
 
 	  //PROJECT4 end
 	  //---------------------	
@@ -386,14 +384,14 @@ Robot* roger;
 
 	
 // ...
-	if(child_states[2] == UNCONVERGED){
+	if(child_states[2] >= UNCONVERGED){
 		child_states[0] = DONT_CARE;
 		child_states[1] = DONT_CARE;
 		child_states[2] = primitive3(roger);
 	}
 	else{
 		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
-			if((child_states[1] = primitive2(roger)) >= CONVERGED) // base is upon ball
+			if((child_states[1] = primitive2(roger)) == CONVERGED) // base is upon ball
 				child_states[2] = primitive3(roger); // try to punch the ball
 			else
 				child_states[2] = DONT_CARE; // don't try to punch the ball
