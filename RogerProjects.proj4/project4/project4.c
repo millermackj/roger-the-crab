@@ -225,7 +225,7 @@ Robot* roger;
      // contact is occuring, otherwise FALSE.
 
 		//triangulate the ball location
-		eye_triangulate(roger, ur, ul, &(ballPos_w[X]), &(ballPos_w[Y]);
+		eye_triangulate(roger, ur, ul, &(ballPos_w[X]), &(ballPos_w[Y]));
 	
 		// continue chasing ball with base
 		define_base_setpoint(roger, ballPos_w[X], ballPos_w[Y]);
