@@ -264,8 +264,7 @@ Robot* roger;
 	  	isPunching = 1;
 	  	punch_time = 1;
 	  }
-	  if(isPunching && fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
-	  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ){
+	  if(isPunching){
 	  	double handPos_w[4] = {0,0,0,1.0};
 	  	double handPos_b[4];
 	  	double vector_mag;
@@ -297,6 +296,14 @@ Robot* roger;
 	  	}
 	  	punch_time++;
 	  	state = UNCONVERGED;
+
+	  	// pull punch if ball is out of range
+	  	if(fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
+	  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ){
+				roger->arm_setpoint[punch_limb][0] = arm_home_predator[punch_limb][0];
+				roger->arm_setpoint[punch_limb][1] = arm_home_predator[punch_limb][1];
+	  	}
+
 	  	// check if punch is done
 	  	if((double)punch_time > punch_duration){
 	  		// reset arm to home position
@@ -308,6 +315,7 @@ Robot* roger;
 				isPunching = 0;
 				state = CONVERGED;
 	  	}
+
 	  }
 
 	  //check if in reach (inv_kinematics will return TRUE)
