@@ -29,8 +29,8 @@
 
 #define BASE_CONTROL_OFFSET    0.17
 
-#define KP_ARM                185
-#define KD_ARM                14
+#define KP_ARM                200
+#define KD_ARM                12
 
 #define KP_EYE                 4.0
 #define KD_EYE                 .07
