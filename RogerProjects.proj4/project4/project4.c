@@ -152,8 +152,8 @@ Robot* roger;
 		define_base_setpoint(roger, ball_x, ball_y);
 
 		// compute base error and set converged if error's small enough
-		if(fabs(ball_x - roger->base_position[X]) < R_OBJ
-				&& fabs(ball_y - roger->base_position[Y]) < R_OBJ)
+		if(fabs(ball_x - roger->base_position[X]) < 2.0*R_OBJ
+				&& fabs(ball_y - roger->base_position[Y]) < 2.0*R_OBJ)
 			state = CONVERGED;
 
 		// keep the eyes tracking the ball
