@@ -283,7 +283,7 @@ Robot* roger;
 	  	punch_x = home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration;
 	  	punch_y = home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * punch_time/punch_duration;
 
-	  	if(punch_x > CONTROL_OFFSET_BASE + R_TACTILE){
+	  	if(punch_x > BASE_CONTROL_OFFSET + R_TACTILE){
 	  		// calculate inverse kinematics for next step of punch trajectory
 	  		if(inv_kinematics(roger, punch_limb,
 	  				home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration,
