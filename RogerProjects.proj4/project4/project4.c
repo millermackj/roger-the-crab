@@ -47,10 +47,10 @@ Robot* roger;
 	//state = primitive2(roger);
 
 	//comment in to test primitive controller 3
-	state = primitive3(roger);
+	//state = primitive3(roger);
 
 	//execute the search track controller
-	//state = macro1(roger);
+	state = macro1(roger);
 
 	//printf("Current controller state: %d \n", state);
 
@@ -75,7 +75,7 @@ double *x, *y;
 
 	// construct the homogeneous transform from the world to the mobile base
   construct_wTb(roger->base_position, wTb);
-
+  inv_transform(wTb, bTw);
  // PROJECT4: Complete this method. Use inputs 'ul' and 'ur' together with eye angles to triangulate the 
  // red ball. The calculated position is in base frame and has to be converted to world frame and written 
  // into 'x' and 'y'.
