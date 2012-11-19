@@ -396,7 +396,7 @@ Robot* roger;
 	}
 	else{
 		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
-			if((child_states[1] = primitive2(roger)) == CONVERGED) // base is upon ball
+			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is upon ball
 				child_states[2] = primitive3(roger); // try to punch the ball
 			else
 				child_states[2] = DONT_CARE; // don't try to punch the ball
