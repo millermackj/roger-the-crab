@@ -152,7 +152,7 @@ Robot* roger;
 		define_base_setpoint(roger, ball_x, ball_y);
 
 		// compute base error and set converged if error's small enough
-		if(fabs(ball_x - roger->base_position[X]) < R_OBJ + 2.0*BASE_CONTROL_OFFSET
+		if(fabs(ball_x - roger->base_position[X]) < R_OBJ + BASE_CONTROL_OFFSET * .05
 				&& fabs(ball_y - roger->base_position[Y]) < 0.01)
 			state = CONVERGED;
 
