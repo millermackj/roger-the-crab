@@ -248,7 +248,7 @@ Robot* roger;
 
 	  int left_OK = 0;
 	  int right_OK = 0;
-	  if(ref_b[0] > BASE_CONTROL_OFFSET){
+	  if(ref_b[X] > BASE_CONTROL_OFFSET && ref_b[Y] < BASE_CONTROL_OFFSET){
 			left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y]+R_TACTILE,&theta_L0, &theta_L1);
 			right_OK = inv_kinematics(roger, RIGHT, ref_b[X],ref_b[Y]-R_TACTILE,&theta_R0, &theta_R1);
 	  }
@@ -256,26 +256,30 @@ Robot* roger;
 			// calculate distance from hand to ball
 	  	if(t % 50 == 0)
 	  	printf("left within reach\n");
+		  roger->arm_setpoint[LEFT][0] = theta_L0;
+	  	roger->arm_setpoint[LEFT][1] = theta_L1;
 		}
 		else{ // left arm out of reach
   		// bring (or keep) left arm home
 			if(t % 50 == 0)
 			printf("left not in reach\n");
-  		theta_L0 = arm_home_predator[LEFT][0];
-	   	theta_L1 = arm_home_predator[LEFT][1];
+			roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
+			roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
 		}
 
 	  if(right_OK){ // is ball within reach of right hand?
 	  	// calculate distance from hand to ball
 	  	if(t % 50 == 0)
 	  	printf("right within reach\n");
+	  	roger->arm_setpoint[RIGHT][0] = theta_R0;
+	  	roger->arm_setpoint[RIGHT][1] = theta_R1;
 	  }
 	  else{
   		// bring (or keep) right arm home
 	  	if(t % 50 == 0)
 	  	printf("right not in reach\n");
-  		theta_R0 = arm_home_predator[RIGHT][0];
-	   	theta_R1 = arm_home_predator[RIGHT][1];
+	  	roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
+	  	roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
 	  }
 		
 	  if(!left_OK && !right_OK)
@@ -284,11 +288,6 @@ Robot* roger;
 			state = UNCONVERGED;
 
 	  // by default, whichever hand(s) can reach the ball will bop it.
-
-	  roger->arm_setpoint[LEFT][0] = theta_L0;
-  	roger->arm_setpoint[LEFT][1] = theta_L1;
-  	roger->arm_setpoint[RIGHT][0] = theta_R0;
-  	roger->arm_setpoint[RIGHT][1] = theta_R1;
 		
 		// assign eye setpoints
 	  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
@@ -496,7 +495,8 @@ double *fx, *fy;
 	
 	if (sqrt(SQR(dist[X]) + SQR(dist[Y])) < R_BASE + R_TACTILE)
 	{
-		printf("Touching robot base. \n");
+		if(t%50 == 0)
+		printf("Touching robot base: \n");
 		return FALSE;
 	}
 
