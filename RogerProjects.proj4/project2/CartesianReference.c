@@ -61,30 +61,41 @@ double *theta1, *theta2;
 		theta1_plus = atan2(y,x) - alpha_plus;
 		theta1_minus = atan2(y,x) - alpha_minus;
 
-// calculate total joint swing and pick minimum
-		double dist_plus = fabs(fmod(theta1_plus-roger->arm_theta[limb][0],M_PI))
-				+ fabs(fmod(theta2_plus-roger->arm_theta[limb][1],M_PI));
-		double dist_minus = fabs(fmod(theta1_minus-roger->arm_theta[limb][0],M_PI))
-						+ fabs(fmod(theta2_minus-roger->arm_theta[limb][1],M_PI));
-		if (dist_plus < dist_minus){
+//    // calculate total joint swing and pick minimum
+//		double dist_plus = fabs(fmod(theta1_plus-roger->arm_theta[limb][0],M_PI))
+//				+ fabs(fmod(theta2_plus-roger->arm_theta[limb][1],M_PI));
+//		double dist_minus = fabs(fmod(theta1_minus-roger->arm_theta[limb][0],M_PI))
+//						+ fabs(fmod(theta2_minus-roger->arm_theta[limb][1],M_PI));
+//		if (dist_plus < dist_minus){
+//			*theta1 = theta1_plus;
+//			*theta2 = theta2_plus;
+//		}
+//		else if (dist_minus < dist_plus){
+//			*theta1 = theta1_minus;
+//			*theta2 = theta2_minus;
+//		}
+//		else{
+//			// bend forward if goal is in front of roger, backward if behind
+//			if((x >= 0 && limb == RIGHT) || (x < 0 && limb == LEFT)){
+//				*theta1 = theta1_plus;
+//				*theta2 = theta2_plus;
+//			}
+//			else{
+//				*theta1 = theta1_minus;
+//				*theta2 = theta2_minus;
+//			}
+//		}
+//
+		// bend forward if goal is in front of roger, backward if behind
+		if((x >= 0 && limb == RIGHT) || (x < 0 && limb == LEFT)){
 			*theta1 = theta1_plus;
 			*theta2 = theta2_plus;
 		}
-		else if (dist_minus < dist_plus){
+		else{
 			*theta1 = theta1_minus;
 			*theta2 = theta2_minus;
 		}
-		else{
-			// bend forward if goal is in front of roger, backward if behind
-			if((x >= 0 && limb == RIGHT) || (x < 0 && limb == LEFT)){
-				*theta1 = theta1_plus;
-				*theta2 = theta2_plus;
-			}
-			else{
-				*theta1 = theta1_minus;
-				*theta2 = theta2_minus;
-			}
-		}
+
 
   	return(1);
   }

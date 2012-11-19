@@ -152,8 +152,8 @@ Robot* roger;
 		define_base_setpoint(roger, ball_x, ball_y);
 
 		// compute base error and set converged if error's small enough
-		if(fabs(ball_x - roger->base_setpoint[X]) < R_OBJ + BASE_CONTROL_OFFSET + 0.08
-				&& fabs(ball_y - roger->base_setpoint[Y]) < 0.01)
+		if(fabs(ball_x - roger->base_position[X]) < R_OBJ + 2.0*BASE_CONTROL_OFFSET
+				&& fabs(ball_y - roger->base_position[Y]) < 0.01)
 			state = CONVERGED;
 
 		// keep the eyes tracking the ball
@@ -249,8 +249,8 @@ Robot* roger;
 	  int left_OK = 0;
 	  int right_OK = 0;
 	  if(ref_b[X] > BASE_CONTROL_OFFSET && ref_b[Y] < BASE_CONTROL_OFFSET){
-			left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y]+R_TACTILE,&theta_L0, &theta_L1);
-			right_OK = inv_kinematics(roger, RIGHT, ref_b[X],ref_b[Y]-R_TACTILE,&theta_R0, &theta_R1);
+			left_OK = inv_kinematics(roger, LEFT, ref_b[X],ref_b[Y]+R_TACTILE*1.5,&theta_L0, &theta_L1);
+			right_OK = inv_kinematics(roger, RIGHT, ref_b[X],ref_b[Y]-R_TACTILE*1.5,&theta_R0, &theta_R1);
 	  }
 		if(left_OK){ // is ball within reach of left hand?
 			// calculate distance from hand to ball
