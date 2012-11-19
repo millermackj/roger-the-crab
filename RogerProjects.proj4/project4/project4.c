@@ -264,8 +264,8 @@ Robot* roger;
 	  		&& fabs(ref_b[Y]) < 0.5*R_OBJ){
 	  	// initialize a new punch
 	  	punch_limb = !punch_limb; // alternate punching arms
-	  	punch_vector[punch_limb][X] = (ref_b[X] - home_vector[punch_limb][X])*1.5;
-	  	punch_vector[punch_limb][Y] = (ref_b[Y] - home_vector[punch_limb][Y])*1.5;
+//	  	punch_vector[punch_limb][X] = (ref_b[X] - home_vector[punch_limb][X])*1.5;
+//	  	punch_vector[punch_limb][Y] = (ref_b[Y] - home_vector[punch_limb][Y])*1.5;
 	  	isPunching = 1;
 	  	punch_time = 1;
 	  }
