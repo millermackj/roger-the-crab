@@ -152,8 +152,8 @@ Robot* roger;
 		define_base_setpoint(roger, ball_x, ball_y);
 
 		// compute base error and set converged if error's small enough
-		if(fabs(ball_x - roger->base_position[X]) < 2.0*R_OBJ
-				&& fabs(ball_y - roger->base_position[Y]) < 2.0*R_OBJ)
+		if(fabs(ball_x - roger->base_position[X]) < 3.0*R_OBJ
+				&& fabs(ball_y - roger->base_position[Y]) < 3.0*R_OBJ)
 			state = CONVERGED;
 
 		// keep the eyes tracking the ball
@@ -341,12 +341,12 @@ Robot* roger;
 // ...
 	if(child_states[2] == UNCONVERGED){
 		child_states[0] = DONT_CARE;
-		child_states[1] = primitive1(roger);
+		child_states[1] = DONT_CARE;
 		child_states[2] = primitive3(roger);
 	}
 	else{
 		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
-			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is upon ball
+			if((child_states[1] = primitive2(roger)) >= CONVERGED) // base is upon ball
 				child_states[2] = primitive3(roger); // try to punch the ball
 			else
 				child_states[2] = DONT_CARE; // don't try to punch the ball
