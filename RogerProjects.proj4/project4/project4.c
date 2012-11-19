@@ -276,8 +276,8 @@ Robot* roger;
 	  	// calculate unit vector pointing from punching hand to center of ball
 	  	vector_mag = sqrt(SQR(ref_b[X] - handPos_b[X])+SQR(ref_b[Y] - handPos_b[Y]));
 
-	  	punch_vector[punch_limb][X] = 2.0*R_OBJ*(ref_b[X] - handPos_b[X]) / vector_mag;
-	  	punch_vector[punch_limb][Y] = 2.0*R_OBJ*(ref_b[Y] - handPos_b[Y]) / vector_mag;
+	  	punch_vector[punch_limb][X] = 1.5*LARM_1*(ref_b[X] - handPos_b[X]) / vector_mag;
+	  	punch_vector[punch_limb][Y] = 1.5*LARM_1*(ref_b[Y] - handPos_b[Y]) / vector_mag;
 
 		  // calculate inverse kinematics for next step of punch trajectory
 	  	if(inv_kinematics(roger, punch_limb,
