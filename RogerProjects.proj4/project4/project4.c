@@ -255,8 +255,8 @@ Robot* roger;
 //	  	printf("ballX_w: %f, ballY_w: %f\nballX_b: %f, ballY_b: %f\n", ref_w[X], ref_w[Y],ref_b[X], ref_b[Y]);
 
 		// check if ball has entered punch zone
-	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
-	  		&& fabs(ref_b[Y]) <= 2.0*R_OBJ){
+	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
+	  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ){
 	  	// initialize a new punch
 	  	punch_limb = !punch_limb; // alternate punching arms
 //	  	punch_vector[punch_limb][X] = (ref_b[X] - home_vector[punch_limb][X])*1.5;
