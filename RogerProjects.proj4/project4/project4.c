@@ -263,11 +263,11 @@ Robot* roger;
 	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 2.0*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
 	  		&& fabs(ref_b[Y]) < 0.5*R_OBJ){
 	  	// initialize a new punch
-	  	punch_vector[X] = ref_b[X]*1.25 - home_vector[X];
-	  	punch_vector[Y] = ref_b[Y]*1.25 - home_vector[X];
+	  	punch_limb = !punch_limb; // alternate punching arms
+	  	punch_vector[X] = ref_b[X]*1.25 - home_vector[punch_limb][X];
+	  	punch_vector[Y] = ref_b[Y]*1.25 - home_vector[punch_limb][Y];
 	  	isPunching = 1;
 	  	punch_time = 1;
-	  	punch_limb = !punch_limb; // alternate punching arms
 	  }
 	  if(isPunching){
 		  	// calculate inverse kinematics for next step of punch trajectory
