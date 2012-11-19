@@ -256,7 +256,7 @@ Robot* roger;
 
 		// check if ball has entered punch zone
 	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 2.0*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
-	  		&& fabs(ref_b[Y]) < 0.5*R_OBJ){
+	  		&& fabs(ref_b[Y]) < R_OBJ){
 	  	// initialize a new punch
 	  	punch_limb = !punch_limb; // alternate punching arms
 //	  	punch_vector[punch_limb][X] = (ref_b[X] - home_vector[punch_limb][X])*1.5;
@@ -276,8 +276,8 @@ Robot* roger;
 	  	// calculate unit vector pointing from punching hand to center of ball
 	  	vector_mag = sqrt(SQR(ref_b[X] - handPos_b[X])+SQR(ref_b[Y] - handPos_b[Y]));
 
-	  	punch_vector[punch_limb][X] = 1.5*LARM_1*(ref_b[X] - handPos_b[X]) / vector_mag;
-	  	punch_vector[punch_limb][Y] = 1.5*LARM_1*(ref_b[Y] - handPos_b[Y]) / vector_mag;
+	  	punch_vector[punch_limb][X] = 1.75*LARM_1*(ref_b[X] - handPos_b[X]) / vector_mag;
+	  	punch_vector[punch_limb][Y] = 1.75*LARM_1*(ref_b[Y] - handPos_b[Y]) / vector_mag;
 
 		  // calculate inverse kinematics for next step of punch trajectory
 	  	if(inv_kinematics(roger, punch_limb,
