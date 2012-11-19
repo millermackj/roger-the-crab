@@ -268,6 +268,7 @@ Robot* roger;
 	  	double handPos_w[4] = {0,0,0,1.0};
 	  	double handPos_b[4];
 	  	double vector_mag;
+	  	double punch_x, punch_y;
 	  	// position of punching hand in world coordinates
 	  	endpoint_pos(roger, punch_limb, &(handPos_w[X]), &(handPos_w[Y]));
 	  	// get hand position in base coordinates
@@ -279,16 +280,20 @@ Robot* roger;
 	  	punch_vector[punch_limb][X] = 2.0*LARM_1*(ref_b[X] - handPos_b[X]) / vector_mag;
 	  	punch_vector[punch_limb][Y] = 2.0*LARM_1*(ref_b[Y] - handPos_b[Y]) / vector_mag;
 
-		  // calculate inverse kinematics for next step of punch trajectory
-	  	if(inv_kinematics(roger, punch_limb,
-	  			home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration,
-	  			home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * punch_time/punch_duration,
-	  			&theta0, &theta1)){
-	  		// set the arm setpoints
-			  roger->arm_setpoint[punch_limb][0] = theta0;
-		  	roger->arm_setpoint[punch_limb][1] = theta1;
-	  	}
+	  	punch_x = home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration;
+	  	punch_y = home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * punch_time/punch_duration;
 
+	  	if(punch_x > CONTROL_OFFSET_BASE + R_TACTILE){
+	  		// calculate inverse kinematics for next step of punch trajectory
+	  		if(inv_kinematics(roger, punch_limb,
+	  				home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration,
+	  				home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * punch_time/punch_duration,
+	  				&theta0, &theta1)){
+	  			// set the arm setpoints
+  				roger->arm_setpoint[punch_limb][0] = theta0;
+	  			roger->arm_setpoint[punch_limb][1] = theta1;
+	  		}
+	  	}
 	  	punch_time++;
 	  	state = UNCONVERGED;
 	  	// check if punch is done
