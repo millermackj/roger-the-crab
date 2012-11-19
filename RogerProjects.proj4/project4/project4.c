@@ -191,12 +191,18 @@ Robot* roger;
 	int ul, ur;
 	double error_eye[2];
 	double arm_force[2];
-	double theta_L0, theta_L1, theta_R0, theta_R1;
+	//double theta_L0, theta_L1, theta_R0, theta_R1;
+	double theta0, theta1;
 	double dist_L, dist_R; // distance from hand to ball
 	int hand_force[2];
 	double fx, fy;
-	static int count = 0; 
+	static int punch_limb = LEFT; // arm to use for punching
 
+	static double punch_vector[2][4] = {{LARM_1, -LARM_1, 0, 1.0}, {LARM_1, LARM_1, 0, 1.0}};
+	double punch_vector_w[4];
+	static int isPunching  = 0;
+	static int punch_time = 0;
+	double punch_duration = 500.0; // duration in ms of punch
 	//state to be returned to outside
 	static int state = NO_REFERENCE;
 	
@@ -219,7 +225,9 @@ Robot* roger;
 		//triangulate the ball location
 		eye_triangulate(roger, ur, ul, &ball_x, &ball_y);		
 	
+		// continue chasing ball with base
 		define_base_setpoint(roger, ball_x, ball_y);
+
 		// calculate eye-error
 		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
 			error_eye[LEFT] = error_eye[RIGHT] = 0;
@@ -229,70 +237,108 @@ Robot* roger;
 		  error_eye[RIGHT]= (NPIXELS/2 - ur) * RAD_PER_PIXEL;
 		}
 
+		// assign eye setpoints
+	  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
+	  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
+
 		// construct the homogeneous transform from the world to the mobile base
 	  construct_wTb(roger->base_position, wTb);
 	  // position feedback
 	  inv_transform(wTb, bTw);
 
-		// convert ball coordinates to base coordinates
+	  // ball coordinates in world frame
 	  ref_w[0] = ball_x;
 	  ref_w[1] = ball_y;
 	  ref_w[2] = 0.0;
 	  ref_w[3] = 1.0;
 
+		// convert ball coordinates to base coordinates
 	  matXvec(bTw, ref_w, ref_b);
 
 //	  if(t%50 == 0)
 //	  	printf("ballX_w: %f, ballY_w: %f\nballX_b: %f, ballY_b: %f\n", ref_w[X], ref_w[Y],ref_b[X], ref_b[Y]);
 
-		//check if in reach (inv_kinematics will return TRUE)
+		// check if ball has entered punch zone
+	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 3.0*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
+	  		&& fabs(ref_b[Y]) < R_OBJ){
+	  	isPunching = 1;
+	  	punch_time = 1;
+	  	punch_limb = !punch_limb; // alternate punching arms
+	  }
+	  if(isPunching){
+	  	// calculate next punch position in world coordinates
+	  	matXvec(wTb, punch_vector[punch_limb], punch_vector_w);
+	  	// calculate inverse kinematics for next step of punch trajectory
+	  	if(inv_kinematics(roger, punch_limb,
+	  			punch_vector_w[X] * punch_time/punch_duration,
+	  			punch_vector_w[Y] * punch_time/punch_duration,
+	  			&theta0, &theta1)){
+	  		// set the arm setpoints
+			  roger->arm_setpoint[punch_limb][0] = theta0;
+		  	roger->arm_setpoint[punch_limb][1] = theta1;
+	  	}
 
-	  int left_OK = 0;
-	  int right_OK = 0;
-	  if(ref_b[X] > BASE_CONTROL_OFFSET){
-			left_OK = inv_kinematics(roger, LEFT, ref_b[X]-0.5*R_OBJ,ref_b[Y]+1.25*R_TACTILE,&theta_L0, &theta_L1);
-			right_OK = inv_kinematics(roger, RIGHT, ref_b[X]-0.5*R_OBJ,ref_b[Y]-1.25*R_TACTILE,&theta_R0, &theta_R1);
+	  	punch_time++;
+	  	state = UNCONVERGED;
+	  	// check if punch is done
+	  	if((double)punch_time > punch_duration){
+	  		// reset arm to home position
+				roger->arm_setpoint[punch_limb][0] = arm_home_predator[punch_limb][0];
+				roger->arm_setpoint[punch_limb][1] = arm_home_predator[punch_limb][1];
+				// reset punch_time
+				punch_time = 0;
+				// stop punching
+				isPunching = 0;
+				state = CONVERGED;
+	  	}
 	  }
-		if(left_OK){ // is ball within reach of left hand?
-			// calculate distance from hand to ball
-//	  	if(t % 50 == 0)
-//	  	printf("left within reach\n");
-		  roger->arm_setpoint[LEFT][0] = theta_L0;
-	  	roger->arm_setpoint[LEFT][1] = theta_L1;
-		}
-		else{ // left arm out of reach
-  		// bring (or keep) left arm home
-//			if(t % 50 == 0)
-//			printf("left not in reach\n");
-			roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
-			roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
-		}
 
-	  if(right_OK){ // is ball within reach of right hand?
-	  	// calculate distance from hand to ball
-//	  	if(t % 50 == 0)
-//	  	printf("right within reach\n");
-	  	roger->arm_setpoint[RIGHT][0] = theta_R0;
-	  	roger->arm_setpoint[RIGHT][1] = theta_R1;
-	  }
-	  else{
-  		// bring (or keep) right arm home
-//	  	if(t % 50 == 0)
-//	  	printf("right not in reach\n");
-	  	roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
-	  	roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
-	  }
+
+
+	  //check if in reach (inv_kinematics will return TRUE)
+//	  int left_OK = 0;
+//	  int right_OK = 0;
+//	  if(ref_b[X] > BASE_CONTROL_OFFSET){
+//			left_OK = inv_kinematics(roger, LEFT, ref_b[X]-0.5*R_OBJ,ref_b[Y]+1.25*R_TACTILE,&theta_L0, &theta_L1);
+//			right_OK = inv_kinematics(roger, RIGHT, ref_b[X]-0.5*R_OBJ,ref_b[Y]-1.25*R_TACTILE,&theta_R0, &theta_R1);
+//	  }
+//		if(left_OK){ // is ball within reach of left hand?
+//			// calculate distance from hand to ball
+////	  	if(t % 50 == 0)
+////	  	printf("left within reach\n");
+//		  roger->arm_setpoint[LEFT][0] = theta_L0;
+//	  	roger->arm_setpoint[LEFT][1] = theta_L1;
+//		}
+//		else{ // left arm out of reach
+//  		// bring (or keep) left arm home
+////			if(t % 50 == 0)
+////			printf("left not in reach\n");
+//			roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
+//			roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
+//		}
+//
+//	  if(right_OK){ // is ball within reach of right hand?
+//	  	// calculate distance from hand to ball
+////	  	if(t % 50 == 0)
+////	  	printf("right within reach\n");
+//	  	roger->arm_setpoint[RIGHT][0] = theta_R0;
+//	  	roger->arm_setpoint[RIGHT][1] = theta_R1;
+//	  }
+//	  else{
+//  		// bring (or keep) right arm home
+////	  	if(t % 50 == 0)
+////	  	printf("right not in reach\n");
+//	  	roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
+//	  	roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
+//	  }
+//
+//	  if(!left_OK && !right_OK)
+//	  	state = NO_REFERENCE; // arm is out of reach
+//	  else
+//			state = UNCONVERGED;
+// by default, whichever hand(s) can reach the ball will bop it.
 		
-	  if(!left_OK && !right_OK)
-	  	state = NO_REFERENCE; // arm is out of reach
-	  else
-			state = UNCONVERGED;
 
-	  // by default, whichever hand(s) can reach the ball will bop it.
-		
-		// assign eye setpoints
-	  roger->eyes_setpoint[LEFT]  = roger->eye_theta[LEFT]  - error_eye[LEFT];
-	  roger->eyes_setpoint[RIGHT] = roger->eye_theta[RIGHT] - error_eye[RIGHT];
 
 		//calculate arm endpoint force vector length			
 		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
