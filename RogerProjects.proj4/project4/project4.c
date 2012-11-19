@@ -198,8 +198,8 @@ Robot* roger;
 	double fx, fy;
 	static int punch_limb = LEFT; // arm to use for punching
 
-	static double punch_vector[2][2] = {{1.5*LARM_1, -LARM_1}, {1.5*LARM_1, LARM_1}};
-	static double home_vector[2][2] = {{0.25, 0.2},{0.25,-0.2}};
+	static double punch_vector[2][4] = {{1.5*LARM_1, -LARM_1, 0 ,1.0}, {1.5*LARM_1, LARM_1, 0 , 1.0}};
+	static double home_vector[2][4] = {{0.25, 0.2,0,1.0},{0.25,-0.2,0,1.0}};
 	double punch_vector_w[4];
 	static int isPunching  = 0;
 	static int punch_time = 0;
@@ -276,13 +276,17 @@ Robot* roger;
 
 	  	// calculate unit vector pointing from punching hand to center of ball
 	  	vector_mag = sqrt(SQR(ball_x - x)+SQR(ball_y - y));
-	  	punch_vector[punch_limb][X] = (ball_x - x) / vector_mag;
-	  	punch_vector[punch_limb][Y] = (ball_y - y) / vector_mag;
+	  	punch_vector_w[X] = (ball_x - x) / vector_mag;
+	  	punch_vector_w[Y] = (ball_y - y) / vector_mag;
+	  	punch_vector_w[2] = 0;
+	  	punch_vector_w[3] = 1.0;
+
+	  	matXvec(bTw, punch_vector_w, punch_vector[punch_limb]);
 
 		  // calculate inverse kinematics for next step of punch trajectory
 	  	if(inv_kinematics(roger, punch_limb,
-	  			home_vector[punch_limb][X] + punch_vector[punch_limb][X] * LARM_1 * punch_time/punch_duration,
-	  			home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * LARM_1 * punch_time/punch_duration,
+	  			home_vector[punch_limb][X] + punch_vector[punch_limb][X] * 1.5*LARM_1 * punch_time/punch_duration,
+	  			home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * 1.5*LARM_1 * punch_time/punch_duration,
 	  			&theta0, &theta1)){
 	  		// set the arm setpoints
 			  roger->arm_setpoint[punch_limb][0] = theta0;
