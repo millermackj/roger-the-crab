@@ -341,7 +341,7 @@ Robot* roger;
 // ...
 	if(child_states[2] == UNCONVERGED){
 		child_states[0] = DONT_CARE;
-		child_states[1] = DONT_CARE;
+		child_states[1] = primitive1(roger);
 		child_states[2] = primitive3(roger);
 	}
 	else{
