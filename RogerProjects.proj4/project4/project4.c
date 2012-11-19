@@ -259,7 +259,7 @@ Robot* roger;
 //	  	printf("ballX_w: %f, ballY_w: %f\nballX_b: %f, ballY_b: %f\n", ref_w[X], ref_w[Y],ref_b[X], ref_b[Y]);
 
 		// check if ball has entered punch zone
-	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 3.0*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
+	  if(!isPunching && fabs((BASE_CONTROL_OFFSET + 2.0*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
 	  		&& fabs(ref_b[Y]) < R_OBJ){
 	  	isPunching = 1;
 	  	punch_time = 1;
@@ -267,11 +267,11 @@ Robot* roger;
 	  }
 	  if(isPunching){
 	  	// calculate next punch position in world coordinates
-	  	matXvec(wTb, punch_vector[punch_limb], punch_vector_w);
+	  	//matXvec(wTb, punch_vector[punch_limb], punch_vector_w);
 	  	// calculate inverse kinematics for next step of punch trajectory
 	  	if(inv_kinematics(roger, punch_limb,
-	  			punch_vector_w[X] * punch_time/punch_duration,
-	  			punch_vector_w[Y] * punch_time/punch_duration,
+	  			punch_vector[punch_limb][X] * punch_time/punch_duration,
+	  			punch_vector[punch_limb][Y] * punch_time/punch_duration,
 	  			&theta0, &theta1)){
 	  		// set the arm setpoints
 			  roger->arm_setpoint[punch_limb][0] = theta0;
@@ -347,6 +347,12 @@ Robot* roger;
 
 	  //PROJECT4 end
 	  //---------------------	
+	}
+	else{ // return arms to home
+		roger->arm_setpoint[LEFT][0] = arm_home_predator[LEFT][0];
+		roger->arm_setpoint[LEFT][1] = arm_home_predator[LEFT][1];
+		roger->arm_setpoint[RIGHT][0] = arm_home_predator[RIGHT][0];
+		roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
 	}
 	
 	return state;
