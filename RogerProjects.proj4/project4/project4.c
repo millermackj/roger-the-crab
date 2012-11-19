@@ -198,11 +198,12 @@ Robot* roger;
 	double fx, fy;
 	static int punch_limb = LEFT; // arm to use for punching
 
-	static double punch_vector[2][4] = {{LARM_1, -LARM_1, 0, 1.0}, {LARM_1, LARM_1, 0, 1.0}};
+	static double punch_vector[2][2] = {{1.5*LARM_1, -LARM_1}, {1.5*LARM_1, LARM_1}};
+	static double home_vector[2][2] = {{0.25, 0.2},{0.25,-0.2}};
 	double punch_vector_w[4];
 	static int isPunching  = 0;
 	static int punch_time = 0;
-	double punch_duration = 100.0; // duration in ms of punch
+	double punch_duration = 150.0; // duration in ms of punch
 	//state to be returned to outside
 	static int state = NO_REFERENCE;
 	
@@ -266,12 +267,10 @@ Robot* roger;
 	  	punch_limb = !punch_limb; // alternate punching arms
 	  }
 	  if(isPunching){
-	  	// calculate next punch position in world coordinates
-	  	//matXvec(wTb, punch_vector[punch_limb], punch_vector_w);
-	  	// calculate inverse kinematics for next step of punch trajectory
+		  	// calculate inverse kinematics for next step of punch trajectory
 	  	if(inv_kinematics(roger, punch_limb,
-	  			punch_vector[punch_limb][X] * punch_time/punch_duration,
-	  			punch_vector[punch_limb][Y] * punch_time/punch_duration,
+	  			home_vector[punch_limb][X] + punch_vector[punch_limb][X] * punch_time/punch_duration,
+	  			home_vector[punch_limb][Y] + punch_vector[punch_limb][Y] * punch_time/punch_duration,
 	  			&theta0, &theta1)){
 	  		// set the arm setpoints
 			  roger->arm_setpoint[punch_limb][0] = theta0;
