@@ -265,7 +265,7 @@ Robot* roger;
 	  	punch_time = 1;
 	  }
 	  if(isPunching && fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
-	  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ)){
+	  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ){
 	  	double handPos_w[4] = {0,0,0,1.0};
 	  	double handPos_b[4];
 	  	double vector_mag;
