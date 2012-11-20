@@ -296,6 +296,13 @@ Robot* roger;
 	  	punch_time++;
 	  	state = UNCONVERGED;
 
+			//calculate arm endpoint force vector length
+			hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
+			hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
+
+			if(!hand_force[punch_limb])
+				made_contact = 1;
+
 	  	// check if punch is done or ball is out of punching range
 	  	if((double)punch_time > punch_duration || !(fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 1.5*R_OBJ
 		  		&& fabs(ref_b[Y]) <= 1.5*R_OBJ)){
@@ -360,12 +367,7 @@ Robot* roger;
 		
 
 
-//		//calculate arm endpoint force vector length
-		hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
-		hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
 
-		if(!hand_force[punch_limb])
-			made_contact = 1;;
 
 	  //PROJECT4 end
 	  //---------------------	
