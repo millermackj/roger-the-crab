@@ -314,10 +314,7 @@ Robot* roger;
 				// stop punching
 				isPunching = 0;
 				state = CONVERGED;
-				if(made_contact){
-					punch_limb = !punch_limb; // alternate punching arms
-					made_contact = 0;
-				}
+				punch_limb = !punch_limb; // alternate punching arms
 	  	}
 
 	  }
