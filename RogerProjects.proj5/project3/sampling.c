@@ -14,11 +14,14 @@
 
 int init_random_seed = TRUE;
 
-double map_prior[NBINS][NBINS];
+
+//specify how many samples it should take before giving up
+#define NUM_SAMPLES 5
+
+int sample_count = 0;
 
 
-
-sample_heading(heading)
+int sample_heading(heading)
 double *heading;
 {
 	//only initialize random number generator with seed once
@@ -31,7 +34,21 @@ double *heading;
 
 	//uniformly sample from -PI to PI
 	*heading = (double) rand() / (double) RAND_MAX * M_PI * 2.0 - M_PI;
+	
+	if (sample_count++ > NUM_SAMPLES) 
+	{
+		sample_count = 0;
+		return FALSE;
+	}
+
 	return TRUE;
+	
+}
+
+//reset the sample count to 0
+reset_sampling_count()
+{
+	sample_count = 0;
 }
 
 //randomly place ball inside map
@@ -65,4 +82,5 @@ place_object_random()
 	place_object(rand_pos[X], rand_pos[Y]);
 		
 }
+
 
