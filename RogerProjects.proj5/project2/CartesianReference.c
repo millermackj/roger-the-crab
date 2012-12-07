@@ -87,15 +87,20 @@ double *theta1, *theta2;
 //		}
 //
 		// bend forward if goal is in front of roger, backward if behind
-		if((x >= 0 && limb == RIGHT) || (x < 0 && limb == LEFT)){
-			*theta1 = theta1_plus;
-			*theta2 = theta2_plus;
-		}
-		else{
-			*theta1 = theta1_minus;
-			*theta2 = theta2_minus;
-		}
+//		if((x >= 0 && limb == RIGHT) || (x < 0 && limb == LEFT)){
+//			*theta1 = theta1_plus;
+//			*theta2 = theta2_plus;
+//		}
+//		else{
+//			*theta1 = theta1_minus;
+//			*theta2 = theta2_minus;
+//		}
 
+// use awkward elbows-in posture.
+    *theta1 = theta1_minus;
+    *theta2 = theta2_minus;
+
+    
 
   	return(1);
   }
