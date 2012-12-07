@@ -22,15 +22,19 @@
 #define IN_REACH          1
 
 /***** PD CONTROL ******************************************************/
-#define KP_BASE               75.0
-#define KD_BASE               12.2
+#define KP_BASE_FX               75.0
+#define KD_BASE_FX               12.0
+#define KP_BASE_M	               100.0
+#define KD_BASE_M                25.0
+
 #define BASE_CONTROL_OFFSET    0.17
 
-#define KP_ARM                80.0
-#define KD_ARM                10.0
+#define KP_ARM                150
+#define KD_ARM                12
 
-#define KP_EYE                 1.0
-#define KD_EYE                 (sqrt(4.0*KP_EYE*I_EYE))
+#define KP_EYE                 4.0
+#define KD_EYE                 .07
+
 
 /***** SOR relaxation parameters ********************************/
 #define THRESHOLD              0.00000000000001
