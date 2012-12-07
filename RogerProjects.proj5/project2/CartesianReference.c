@@ -97,8 +97,15 @@ double *theta1, *theta2;
 //		}
 
 // use awkward elbows-in posture.
-    *theta1 = theta1_minus;
-    *theta2 = theta2_minus;
+		if((x >= 0 && limb == LEFT) || (x < 0 && limb == RIGHT)){
+			*theta1 = theta1_plus;
+			*theta2 = theta2_plus;
+		}
+		else{
+			*theta1 = theta1_minus;
+			*theta2 = theta2_minus;
+		}
+
 
     
 
