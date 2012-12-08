@@ -117,9 +117,7 @@ double *x, *y;
 
 //double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
 //			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
-double arm_home_predator[2][2] = double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
-  {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
-
+double arm_home_predator[2][2] = {{(-1.044), (-2.415)}, {(1.044), (2.415)}};
 
 
 /*
