@@ -13,7 +13,10 @@
 #include "modes.h"
 
 #define RAD_PER_PIXEL ((M_PI/2.0)/(double)NPIXELS) // radians per pixel
-
+#define HOME_L1 (-.941)
+#define HOME_L2 (-2.349)
+#define HOME_R1 (.941)
+#define HOME_R2 (2.349)
 // states returned by controllers
 enum {
 	NO_REFERENCE = 0,
@@ -117,7 +120,7 @@ double *x, *y;
 
 //double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
 //			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
-double arm_home_predator[2][2] = {{(-.941), (-2.349)}, {(.941), (2.349)}};
+double arm_home_predator[2][2] = {{HOME_L1, HOME_L2},{HOME_R1, HOME_R2}};
 
 
 /*
@@ -203,8 +206,7 @@ Robot* roger;
 	static int made_contact = 0;
 	static double punch_vector[2][4] = {{1.5*LARM_1, -LARM_1, 0 ,1.0}, {1.5*LARM_1, LARM_1, 0 , 1.0}};
 	static double home_vector[2][4] = {
-			{arm_home_predator[1][1], arm_home_predator[1][2], 0, 1.0}, 
-			arm_home_predator[2][1], arm_home_predator[2][2], 0, 1.0};
+			{-0.2, -.15, 1.0},-.2, .15, 0, 1.0};
 	double punch_vector_w[4];
 	static int isPunching  = 0;
 	static int punch_time = 0;
