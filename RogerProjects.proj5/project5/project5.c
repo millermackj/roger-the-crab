@@ -239,7 +239,7 @@ Robot* roger;
 	//rows are search locations with x, y in the columns
 
 	#define NUM_SEARCH_LOCATIONS 5 	
-	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 1.5}, {1.5, 1.5},{-1.5, 1.5},{-1.5,-1.5}};
+	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 1.25}, {1.625, 1.25},{-1.25, 1.25},{-1.25,-1.25}};
 
 //PROJECT 5 5end
 //-------------------------------
