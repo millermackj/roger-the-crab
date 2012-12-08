@@ -33,8 +33,11 @@ extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
 extern char filename[32];
 int firstRun = TRUE;
-double arm_home[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
-			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
+
+double arm_home_predator[2][2] = {{HOME_L1, HOME_L2},{HOME_R1, HOME_R2}};
+
+//double arm_home[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
+//			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
 
 project3_control(roger)
 Robot* roger;

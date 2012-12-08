@@ -13,10 +13,7 @@
 #include "modes.h"
 
 #define RAD_PER_PIXEL ((M_PI/2.0)/(double)NPIXELS) // radians per pixel
-#define HOME_L1 (-.941)
-#define HOME_L2 (-2.349)
-#define HOME_R1 (.941)
-#define HOME_R2 (2.349)
+
 // states returned by controllers
 enum {
 	NO_REFERENCE = 0,
