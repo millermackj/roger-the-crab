@@ -235,7 +235,7 @@ int button;		//mouse button
 //	theRobot = roger;
   double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4], theta0, theta1;
   int body_side = 0;
-	if(t%50 == 0)
+
   printf("Arm goal input - x: %4.3f, y: %4.3f - button: %d\n", x, y, button);
 
   //COMPLETE FOR PROJECT #2
@@ -247,7 +247,7 @@ int button;		//mouse button
   else
     return;
 
-  printf("x=%6.4lf y=%6.4lf\n", x, y);
+//  printf("x=%6.4lf y=%6.4lf\n", x, y);
   
   // transform from world to base coords
 
@@ -269,6 +269,8 @@ int button;		//mouse button
 //  	printf("\narm: %d\ttheta0: %lf\ttheta1: %lf", body_side, theta0, theta1);
   	roger->arm_setpoint[body_side][0] = theta0;
   	roger->arm_setpoint[body_side][1] = theta1;
+  	printf("%s arm. theta0: %.3f theta1: %.3f\n", body_side == 0 ? "left" : 
+  			"right", theta0, theta1);
 	}
   // otherwise, make no changes to the arm setpoints
 
