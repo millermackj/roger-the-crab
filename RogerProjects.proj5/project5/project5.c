@@ -163,9 +163,13 @@ Robot* roger;
 	for (i = 0; i < NBINS; ++i) {   // rows
 		for (j = 0; j < NBINS; ++j) {   // cols
 			if (roger->world_map.occupancy_map[i][j] == OBSTACLE) {
+				
+				// we've come upon an obstacle! so start iterating backwards along x direction
 				num_obs++;
-				// we've come upon an obstacle! so look backwards in both dimensions and dilate behind current pixel
+				
+				// iterate backwards in x direction
 				for(xbin = i; xbin >= 0 && xbin >= i - ROBOT_DILATE_RADIUS/XDELTA - 1; xbin--){
+					// first look in negative y direction for freespace to mark
 					for(ybin = j; ybin >= 0 && ybin >= j - ROBOT_DILATE_RADIUS/YDELTA - 1; ybin--){
 						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
 								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
@@ -175,6 +179,7 @@ Robot* roger;
 							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
 						}
 					}
+					// then look in positive direction for freespace to mark
 					for(ybin = j; ybin < NBINS && ybin <= j + ROBOT_DILATE_RADIUS/YDELTA + 1; ybin++){
 						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
 								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
@@ -186,8 +191,9 @@ Robot* roger;
 					}
 				}
 				
-				// now look forward by dilation radius and dilate ahead of current pixel
+				// now look forward in x direction and dilate back and forward in y direction
 				for(xbin = i; xbin < NBINS && xbin <= i + ROBOT_DILATE_RADIUS/XDELTA + 1; xbin++){
+					// iterate backwards in y direction
 					for(ybin = j; ybin >= 0 && ybin >= j - ROBOT_DILATE_RADIUS/YDELTA - 1; ybin--){
 						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
 								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
@@ -197,6 +203,7 @@ Robot* roger;
 							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
 						}
 					}
+					// iterate forwards in y direction
 					for(ybin = j; ybin < NBINS && ybin <= j + ROBOT_DILATE_RADIUS/YDELTA + 1; ybin++){
 						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
 								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
@@ -231,8 +238,8 @@ Robot* roger;
 
 	//rows are search locations with x, y in the columns
 
-	#define NUM_SEARCH_LOCATIONS 2 	
-	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 0.8} };
+	#define NUM_SEARCH_LOCATIONS 5 	
+	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 1.5}, {1.5, 1.5},{-1.5, 1.5},{-1.5,-1.5}};
 
 //PROJECT 5 5end
 //-------------------------------
