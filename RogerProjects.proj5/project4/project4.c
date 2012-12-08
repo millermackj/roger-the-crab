@@ -206,7 +206,7 @@ Robot* roger;
 	static int made_contact = 0;
 	static double punch_vector[2][4] = {{3.5*LARM_1, -LARM_1, 0 ,1.0}, {3.5*LARM_1, LARM_1, 0 , 1.0}};
 	static double home_vector[2][4] = {
-			{-0.2, -.15, 0, 1.0},{-.2, .15, 0, 1.0};
+			{-0.2, -.15, 0, 1.0},{-.2, .15, 0, 1.0}};
 	double punch_vector_w[4];
 	static int isPunching  = 0;
 	static int punch_time = 0;
