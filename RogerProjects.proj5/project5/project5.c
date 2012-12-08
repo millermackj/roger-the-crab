@@ -121,8 +121,8 @@ int xbin1, ybin1, xbin2, ybin2;
 }
 
 
-//#define ROBOT_DILATE_RADIUS (R_TACTILE + R_BASE + 0.01)
-#define ROBOT_DILATE_RADIUS (.1)
+#define ROBOT_DILATE_RADIUS (R_TACTILE + R_BASE + 0.01)
+
 
 
 dilate_obstacles(roger)
@@ -157,7 +157,7 @@ Robot* roger;
 
    //create dilated obstacles		
 
-	printf("!!!  Obstacle dilation needs to be implemented here!  !!!!\n");
+//	printf("!!!  Obstacle dilation needs to be implemented here!  !!!!\n");
 
 
 	for (i = 0; i < NBINS; ++i) {   // rows
