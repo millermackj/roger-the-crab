@@ -174,10 +174,28 @@ Robot* roger;
 							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
 						}
 					}
+					for(ybin = j+1; ybin < NBINS && ybin <= j + ROBOT_DILATE_RADIUS/YDELTA + 1; ybin++){
+						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
+								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
+							num_dilate++;
+							roger->world_map.occupancy_map[xbin][ybin] = DILATED_OBSTACLE;
+							roger->world_map.potential_map[xbin][ybin] = 1.0;
+							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
+						}
+					}
 				}
 				
 				// now look forward by dilation radius and dilate ahead of current pixel
 				for(xbin = i+1; xbin < NBINS && xbin <= i + ROBOT_DILATE_RADIUS/XDELTA + 1; xbin++){
+					for(ybin = j-1; ybin >= 0 && ybin >= j - ROBOT_DILATE_RADIUS/YDELTA - 1; ybin--){
+						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
+								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
+							num_dilate++;
+							roger->world_map.occupancy_map[xbin][ybin] = DILATED_OBSTACLE;
+							roger->world_map.potential_map[xbin][ybin] = 1.0;
+							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
+						}
+					}
 					for(ybin = j+1; ybin < NBINS && ybin <= j + ROBOT_DILATE_RADIUS/YDELTA + 1; ybin++){
 						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
 								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
