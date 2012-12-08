@@ -262,8 +262,8 @@ int button;		//mouse button
   matXvec(bTw, ref_w, ref_b);
 
   //printf("Arm goal, world. x: %4.3f, y: %4.3f - button: %d\n", x, y, button);
-  printf("%s arm goal, base. x: %4.3f, y: %4.3f\n",body_side == 0 ? "left" : 
-			"right", ref_b[X], ref_b[Y]);
+  printf("%s arm goal, base. x: %4.3f, y: %4.3f, dist: %4.3f\n",body_side == 0 ? "left" : 
+			"right", ref_b[X], ref_b[Y], sqrt(ref_b[X]*ref_b[X]+ref_b[Y]*ref_b[Y]));
 
   
   if(inv_kinematics(roger, body_side, ref_b[X], ref_b[Y], &theta0, &theta1)){
