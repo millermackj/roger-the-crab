@@ -106,9 +106,6 @@ double *theta1, *theta2;
 			*theta2 = theta2_minus;
 		}
 
-
-    
-
   	return(1);
   }
   else
@@ -236,8 +233,7 @@ int button;		//mouse button
   double wTb[4][4], bTw[4][4], ref_b[4], ref_w[4], theta0, theta1;
   int body_side = 0;
 
-  printf("Arm goal input - x: %4.3f, y: %4.3f - button: %d\n", x, y, button);
-
+  
   //COMPLETE FOR PROJECT #2
   body_side = 0;
   if (button == LEFT_BUTTON) //Left mouse button
@@ -265,6 +261,11 @@ int button;		//mouse button
   // transform reference coordinates base frame
   matXvec(bTw, ref_w, ref_b);
 
+  //printf("Arm goal, world. x: %4.3f, y: %4.3f - button: %d\n", x, y, button);
+  printf("%s arm goal, base. x: %4.3f, y: %4.3f\n",body_side == 0 ? "left" : 
+			"right", ref_b[X], ref_b[Y]);
+
+  
   if(inv_kinematics(roger, body_side, ref_b[X], ref_b[Y], &theta0, &theta1)){
 //  	printf("\narm: %d\ttheta0: %lf\ttheta1: %lf", body_side, theta0, theta1);
   	roger->arm_setpoint[body_side][0] = theta0;
