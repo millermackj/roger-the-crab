@@ -206,7 +206,7 @@ Robot* roger;
 	double punch_vector_w[4];
 	static int isPunching  = 0;
 	static int punch_time = 0;
-	double punch_duration = 180.0; // duration in ms of punch
+	double punch_duration = 200.0; // duration in ms of punch
 	//state to be returned to outside
 	static int state = NO_REFERENCE;
 	
