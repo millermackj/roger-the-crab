@@ -117,7 +117,7 @@ double *x, *y;
 
 //double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
 //			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
-double arm_home_predator[2][2] = {{(-1.044), (-2.415)}, {(1.044), (2.415)}};
+double arm_home_predator[2][2] = {{(-.941), (-2.349)}, {(.941), (2.349)}};
 
 
 /*
@@ -202,7 +202,9 @@ Robot* roger;
 	static int punch_limb = LEFT; // arm to use for punching
 	static int made_contact = 0;
 	static double punch_vector[2][4] = {{1.5*LARM_1, -LARM_1, 0 ,1.0}, {1.5*LARM_1, LARM_1, 0 , 1.0}};
-	static double home_vector[2][4] = {{0.25, 0.2,0,1.0},{0.25,-0.2,0,1.0}};
+	static double home_vector[2][4] = {
+			{arm_home_predator[1][1], arm_home_predator[1][2], 0, 1.0}, 
+			arm_home_predator[2][1], arm_home_predator[2][2], 0, 1.0};
 	double punch_vector_w[4];
 	static int isPunching  = 0;
 	static int punch_time = 0;

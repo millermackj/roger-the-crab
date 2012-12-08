@@ -63,7 +63,7 @@ Robot* roger;
 // It might also be good to adjust the ready pose of the arms used in project 4 ("arm_home_predator") as well as choosing the more 
 // awkward elbows-in solution for the inverse kinematics.
 
-double arm_home_drive[2][2] = {{(-1.044), (-2.415)}, {(1.044), (2.415)}};
+double arm_home_drive[2][2] = {{(-.941), (-2.349)}, {(.941), (2.349)}};
 
 //PROJECT 5 end
 //------------------------
