@@ -115,8 +115,12 @@ double *x, *y;
  //---------------------	
 }
 
-double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
-			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
+//double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
+//			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
+double arm_home_predator[2][2] = double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
+  {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
+
+
 
 /*
 / APPROACH - primitive controller p2 will use base to approach the ball while eyes keep tracking the ball
