@@ -90,7 +90,7 @@ Robot* roger;
 
 
 /*
-/ Given two grid coordinates (indeces) in the occupancy grid, calculate and return the distance between the closest points of both grid cells.
+/ Given two grid coordinates (indices) in the occupancy grid, calculate and return the distance between the closest points of both grid cells.
 / The size of each cell is XDELTA x YDELTA. 
 */
 double cell_distance(xbin1, ybin1, xbin2, ybin2)
@@ -103,8 +103,14 @@ int xbin1, ybin1, xbin2, ybin2;
 
 	//calculate distance in x direction   
 	
-
+	dist[X] = abs(xbin2 - xbin1)*XDELTA; // center distance
+	if(dist[X] > 0)
+		dist[X] -= XDELTA;
+	
 	//calculate distance in y direction
+	dist[Y] = abs(ybin2 - ybin1)*YDELTA; // center distance
+	if(dist[Y] > 0)
+		dist[Y] -= YDELTA;
 	
 
 //PROJECT 5 end
@@ -115,7 +121,7 @@ int xbin1, ybin1, xbin2, ybin2;
 }
 
 
-#define ROBOT_DILATE_RADIUS 0.05
+#define ROBOT_DILATE_RADIUS (R_TACTILE + R_BASE + 0.01)
 
 
 dilate_obstacles(roger)
@@ -148,16 +154,44 @@ Robot* roger;
 //You need to complete function "cell_distance(xbin1,ybin1, xbin2, ybin2)" first which will return the distance between the closest 
 //points of two grid cells. Adjust constant ROBOT_DILATE_RADIUS above to match the circle size that matches your robot.
 
-	
    //create dilated obstacles		
 
 	printf("!!!  Obstacle dilation needs to be implemented here!  !!!!\n");
 
 
+	for (i = 0; i < NBINS; ++i) {   // rows
+		for (j = 0; j < NBINS; ++j) {   // cols
+			if (roger->world_map.occupancy_map[i][j] == OBSTACLE) {
+				num_obs++;
+				// we've come upon an obstacle! so look backwards in both dimensions and dilate behind current pixel
+				for(xbin = i-1; xbin >= 0 && xbin >= i - ROBOT_DILATE_RADIUS/XDELTA - 1; xbin--){
+					for(ybin = j-1; ybin >= 0 && ybin >= j - ROBOT_DILATE_RADIUS/YDELTA - 1; ybin--){
+						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
+								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
+							num_dilate++;
+							roger->world_map.occupancy_map[xbin][ybin] = DILATED_OBSTACLE;
+							roger->world_map.potential_map[xbin][ybin] = 1.0;
+							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
+						}
+					}
+				}
+				
+				// now look forward by dilation radius and dilate ahead of current pixel
+				for(xbin = i+1; xbin < NBINS && xbin <= i + ROBOT_DILATE_RADIUS/XDELTA + 1; xbin++){
+					for(ybin = j+1; ybin < NBINS && ybin <= j + ROBOT_DILATE_RADIUS/YDELTA + 1; ybin++){
+						if(cell_distance(i, j, xbin, ybin) <= ROBOT_DILATE_RADIUS 
+								&& roger->world_map.occupancy_map[xbin][ybin] == FREESPACE){
+							num_dilate++;
+							roger->world_map.occupancy_map[xbin][ybin] = DILATED_OBSTACLE;
+							roger->world_map.potential_map[xbin][ybin] = 1.0;
+							roger->world_map.color_map[xbin][ybin] = LIGHTYELLOW;
+						}
+					}
+				}
+			}			
+		}
+	}
 
-	//roger->world_map.occupancy_map[ybin][xbin] = DILATED_OBSTACLE;
-	//roger->world_map.potential_map[ybin][xbin] = 1.0;
-	//roger->world_map.color_map[ybin][xbin] = LIGHTYELLOW;
 
 
 	printf("Total: %d obstacles, %d freespaces marked as dilated obstacles.\n", num_obs, num_dilate);
