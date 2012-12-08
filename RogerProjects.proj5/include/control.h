@@ -27,6 +27,13 @@
 #define KP_BASE_M	               100.0
 #define KD_BASE_M                25.0
 
+// home position for travelling
+#define HOME_L1 (-.941)
+#define HOME_L2 (-2.349)
+#define HOME_R1 (.941)
+#define HOME_R2 (2.349)
+
+
 #define BASE_CONTROL_OFFSET    0.17
 
 #define KP_ARM                150
