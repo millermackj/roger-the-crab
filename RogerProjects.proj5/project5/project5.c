@@ -256,8 +256,8 @@ Robot* roger;
 
 	for (i=0; i<NUM_SEARCH_LOCATIONS; i++)
 	{
-		ybin = (int)((MAX_Y - search_locations[i][Y])/YDELTA);
-		xbin = (int)((search_locations[i][X] - MIN_X)/XDELTA);
+		ybin = round((MAX_Y - search_locations[i][Y])/YDELTA);
+		xbin = round((search_locations[i][X] - MIN_X)/XDELTA);
 
 		printf("%d : %4.3f, %4.3f -> %d, %d \n", i, search_locations[i][X], search_locations[i][Y], xbin, ybin );
 		roger->world_map.occupancy_map[ybin][xbin] = GOAL;
@@ -428,7 +428,7 @@ double grad[2]; // grad = [ d(phi)/dx  d(phi)/dy ] ~ [ d(phi)/dj  -d(phi)/di ]
 //--------------Primitive4 - follow gradient of harmonic function-------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------------------------------
 
-#define CONTROL_STEP 0.2
+#define CONTROL_STEP 0.75
 
 /*
 / Harmonic function path planner / follower. It will follow a gradient in the potential map 
@@ -441,8 +441,11 @@ int primitive4(roger)
 Robot* roger;
 {
 	int xbin, ybin;
-	double x, y, bb, mag, grad[2], compute_gradient();
+	double x, y, bb, mag, grad[2]; //, compute_gradient();
 	int state;
+	double wTb[4][4], bTw[4][4];
+	static double ref_b[4] = {BASE_CONTROL_OFFSET, 0, 0, 1.0};
+	double ref_w[4];
 
 	state = NO_REFERENCE;
 	
@@ -456,16 +459,41 @@ Robot* roger;
 // Be aware that the occupancy and potential maps are indexed with y value first (occupancy_map[ybin][xbin]).
 
 
-	
-	//delete current goal from harmonic map
-	//  roger->world_map.occupancy_map[ybin][xbin] = FREESPACE;
-	//  roger->world_map.potential_map[ybin][xbin] = 0.0;
-   //relax map again to account for changes
-	//  sor(roger);
 
+	 x = roger->base_position[X];
+	 y = roger->base_position[Y];
+	 ybin = round((MAX_Y - y)/YDELTA);
+	 xbin = round((x - MIN_X)/XDELTA);
 
+	 construct_wTb(roger->base_position,wTb);
+	 //inv_transform(wTb, bTw);
+	 // find world coordinates of base control point
+   matXvec(wTb, ref_b, ref_w);
 
-
+	 printf("xbin: %d, ybin: %d\n", xbin, ybin);
+	 if(roger->world_map.occupancy_map[ybin][xbin] == GOAL){
+		//delete current goal from harmonic map
+		 roger->world_map.occupancy_map[ybin][xbin] = FREESPACE;
+		 roger->world_map.potential_map[ybin][xbin] = 1.0;
+		 // relax map again to account for changes
+		 sor(roger);
+		 state = CONVERGED;
+		 printf("goal deleted\n");
+		 roger->base_setpoint[X] = ref_w[X];
+		 roger->base_setpoint[Y] = ref_w[Y];
+	 }
+	 else{
+		 mag = compute_gradient(x, y, roger, grad);
+		 if(mag != 0.0){
+			 roger->base_setpoint[X] = x - CONTROL_STEP*(grad[X]) + (ref_w[X]-x);
+			 roger->base_setpoint[Y] = y - CONTROL_STEP*(grad[Y]) + (ref_w[Y]-y);
+			 state = UNCONVERGED;
+		 }
+		 else{ // if gradient is zero (below threshold)
+			 roger->base_setpoint[X] = ref_w[X];
+			 roger->base_setpoint[Y] = ref_w[Y];
+		 }
+	 }
 	
 //PROJECT5 end
 //-----------------------------
