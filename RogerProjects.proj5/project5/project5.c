@@ -20,7 +20,6 @@ enum {
 	CONVERGED
 };
 
-
 int project5_initialized = FALSE;
 
 project5_control(roger)
@@ -239,7 +238,7 @@ Robot* roger;
 	//rows are search locations with x, y in the columns
 
 	#define NUM_SEARCH_LOCATIONS 5 	
-	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 1.25}, {1.625, 1.25},{-1.25, 1.25},{-1.25,-1.25}};
+	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 1.25}, {1.25, 1.25},{-1.25, 1.25},{-1.25,-1.25}};
 
 //PROJECT 5 5end
 //-------------------------------
@@ -289,8 +288,24 @@ Robot * roger;
 		if (sor_once(roger) < THRESHOLD) 
 			converged = TRUE;
 	}
-	if (sor_count > 1)
+	if (sor_count > 1){
 		printf("completed harmonic function --- %d iterations\n", sor_count);
+		int j = 0;
+		int i = 0;
+
+		FILE * writefile;
+		writefile = fopen("potential_map.tab", "w");
+		for(i = 0; i < NBINS; i++){
+			fprintf(writefile, "\t%d", i);
+		}
+		for(j = 0; j < NBINS; j++){
+			fprintf(writefile, "\n%d",j);
+			for(i = 0; i < NBINS; i++){
+				fprintf(writefile, "\t%f", roger->world_map.potential_map[j][i]);
+			}
+		}
+		fclose(writefile);
+	}
 }
 
 
@@ -312,12 +327,51 @@ Robot * roger;
 // occupancy map as a means of determining convergence
 // 
 // 0.0 <= roger->world_map.potential_map[ybin][xbin] <= 1.0
+	for (j = 0; j < NBINS; j++) {   // cols
+		// pad y boundary cells by repeating the boundary edge
+		if(j == 0){
+			jneg = 0;
+			jpos = j + 1;
+		}
+		else if(j == NBINS - 1){
+			jneg = j - 1;
+			jpos = j;
+		}
+		else{
+			jneg = j - 1;
+			jpos = j + 1;
+		}
 
+		for (i = 0; i < NBINS; i++) {   // rows
+			if(roger->world_map.occupancy_map[j][i] == FREESPACE){
+				if(i == 0){
+					ineg = i;
+					ipos = i + 1;
+				}
+				else if(i == NBINS - 1){
+					ineg = i - 1;
+					ipos = i;
+				}
+				else{
+					ineg = i - 1;
+					ipos = i + 1;
+				}
 
+				up = roger->world_map.potential_map[jpos][i];
+				down = roger->world_map.potential_map[jneg][i];
+				back = roger->world_map.potential_map[j][ineg];
+				front = roger->world_map.potential_map[j][ipos];
 
+				residual = (back + front + up + down - 4.0*roger->world_map.potential_map[j][i]);
 
+				roger->world_map.potential_map[j][i] += (RELAXATION_FACTOR/4.0)*residual;
 
-
+				if(fabs(residual) > max)
+					max = fabs(residual);
+			}
+		}
+	}
+	
 //PROJECT 5 end
 //----------------------
 

@@ -44,6 +44,7 @@
 
 
 /***** SOR relaxation parameters ********************************/
+#define RELAXATION_FACTOR	1.8
 #define THRESHOLD              0.00000000000001
 #define FREESPACE              1
 #define OBSTACLE	       		 2
