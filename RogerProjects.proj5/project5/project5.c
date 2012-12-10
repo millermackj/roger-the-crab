@@ -344,7 +344,8 @@ Robot * roger;
 		}
 
 		for (i = 0; i < NBINS; i++) {   // rows
-			if(roger->world_map.occupancy_map[j][i] == FREESPACE){
+			if(roger->world_map.occupancy_map[j][i] == FREESPACE
+					|| roger->world_map.occupancy_map[j][i] == DILATED_OBSTACLE){
 				if(i == 0){
 					ineg = i;
 					ipos = i + 1;
