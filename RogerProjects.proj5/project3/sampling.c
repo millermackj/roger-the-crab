@@ -18,7 +18,7 @@ int init_random_seed = TRUE;
 //specify how many samples it should take before giving up
 #define NUM_SAMPLES 5
 
-int sample_count = 0;
+static int sample_count = 0;
 
 
 int sample_heading(heading)
@@ -37,7 +37,7 @@ double *heading;
 	
 	if (sample_count++ > NUM_SAMPLES) 
 	{
-		sample_count = 0;
+		//sample_count = 0;
 		return FALSE;
 	}
 

@@ -302,9 +302,10 @@ Robot* roger;
 			hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
 			hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
 
-			if(!hand_force[punch_limb])
+			if(!hand_force[punch_limb]){
 				made_contact = 1;
-
+				state = CONVERGED;
+			}
 	  	// check if punch is done or ball is out of punching range
 	  	if((double)punch_time > punch_duration || !(fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
 		  		&& fabs(ref_b[Y]) <= 2.0*R_OBJ)){
@@ -315,7 +316,6 @@ Robot* roger;
 				punch_time = 0;
 				// stop punching
 				isPunching = 0;
-				state = CONVERGED;
 				punch_limb = !punch_limb; // alternate punching arms
 	  	}
 
@@ -385,7 +385,7 @@ Robot* roger;
 int macro1(roger)
 Robot* roger;
 {
-	int state = NO_REFERENCE;	
+	static int state = UNCONVERGED;
 	const int num_children = 3;
 	static int init = TRUE;
 	static int* child_states;
@@ -413,25 +413,34 @@ Robot* roger;
 
 	
 // ...
+	// if punch is in progress, keep punching
 	if(child_states[2] >= UNCONVERGED){
+		state = child_states[2];
 		child_states[0] = DONT_CARE;
 		child_states[1] = DONT_CARE;
 		child_states[2] = primitive3(roger);
 	}
-	else{
+	else{ // punch is not in progress
 		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
 			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is upon ball
 				child_states[2] = primitive3(roger); // try to punch the ball
+			if(child_states[2] == CONVERGED)
+				state = CONVERGED;
 			else
 				child_states[2] = DONT_CARE; // don't try to punch the ball
+			state = UNCONVERGED;
 		}
 		else{ // ball is not in sight
 			child_states[1] = DONT_CARE;
 			child_states[2] = DONT_CARE;
+			if(child_states[0] == NO_REFERENCE){
+//				printf("in macro1: macro0 has no reference\n");
+				state = NO_REFERENCE;
+			}
+			else
+				state = UNCONVERGED;
 		}
 	}
-
-
 
 //PROJECT4 end
 //-------------------------------

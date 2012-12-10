@@ -19,7 +19,8 @@ enum {
 	UNCONVERGED,
 	CONVERGED
 };
-
+//char* statenames[4] = {"no reference", "don't care", "unconverged", "converged"};
+extern char* statenames[4];
 int project5_initialized = FALSE;
 
 project5_control(roger)
@@ -38,10 +39,10 @@ Robot* roger;
 	sor(roger);
 	
 	//execute harmonic function path planner
-	state = primitive4(roger);
+	//state = primitive4(roger);
 
 	//execute the multi room punch controller
-	//state = macro2(roger);
+	state = macro2(roger);
 
 	//printf("Current controller state: %d \n", state);
 	
@@ -237,8 +238,8 @@ Robot* roger;
 
 	//rows are search locations with x, y in the columns
 
-	#define NUM_SEARCH_LOCATIONS 5 	
-	double search_locations[NUM_SEARCH_LOCATIONS][2] = { {0.0, 0.0}, {0.0, 1.25}, {1.25, 1.25},{-1.25, 1.25},{-1.25,-1.25}};
+	#define NUM_SEARCH_LOCATIONS 4
+	double search_locations[NUM_SEARCH_LOCATIONS][2] = {{0.0, 1.25}, {1.25, 1.25},{-1.25, 1.25},{-1.25,-1.25}};
 
 //PROJECT 5 5end
 //-------------------------------
@@ -470,7 +471,7 @@ Robot* roger;
 	 // find world coordinates of base control point
    matXvec(wTb, ref_b, ref_w);
 
-	 printf("xbin: %d, ybin: %d\n", xbin, ybin);
+//	 printf("xbin: %d, ybin: %d\n", xbin, ybin);
 	 if(roger->world_map.occupancy_map[ybin][xbin] == GOAL){
 		//delete current goal from harmonic map
 		 roger->world_map.occupancy_map[ybin][xbin] = FREESPACE;
@@ -502,7 +503,6 @@ Robot* roger;
 }
 
 
-
 //----------------------------------------------------------------------------------------------------------------------------------------------
 //---------------Macro2 - multi room ball predator ---------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------------------------------
@@ -514,7 +514,7 @@ int macro2(roger)
 Robot* roger;
 {
 	static int state = NO_REFERENCE;	
-	const int num_children = 3;
+	const int num_children = 2;
 	static int init = TRUE;
 	static int* child_states;
 	int i;	
@@ -528,8 +528,8 @@ Robot* roger;
 		}
 		init = FALSE;
 	}
-	printf("Macro2 state: %d \n", state);
-	//printf("Macro2 state: %d (Child0: %d / Child1: %d / Child3: %d)\n", state, child_states[0], child_states[1], child_states[2]);
+//	printf("Macro2 state: %s \n", statenames[state]);
+//printf("Macro2 state: %s (macro1: %s, primitive4: %s)\n", statenames[state], statenames[child_states[0]], statenames[child_states[1]]);
 
 
 //------------------------
@@ -541,16 +541,33 @@ Robot* roger;
 // Likewise, if you are using primitive4(), please execute 'init_search_locations(roger);' once you hit the ball. Executing those two functions
 // will reset heading and x/y search locations.
 
-		//reset_sampling_count();				
-	   //init_search_locations(roger);
+// child states:
+//	0		macro1			search headings, approach, punch
+// 	1		primitive4	gradient descent to search goals
 
 
+child_states[0] = macro1(roger); // start by trying search headings from current position
 
+// if we've exhausted search headings
+if(child_states[0] == NO_REFERENCE){
+	child_states[1] = primitive4(roger); // go to next search goal
+	if(child_states[1] == CONVERGED){
+		reset_sampling_count(); // trigger heading search again
+		printf("sampling count has been reset!\n");
+		child_states[0] = macro1(roger);
+		printf("macro1 state: %s\n", statenames[child_states[0]]);
+		child_states[1] == DONT_CARE;
+	}
+}
+if(child_states[0] == CONVERGED){
+	state = CONVERGED;
+	init_search_locations(roger); // prepare all search locations for another round
+}
+if(child_states[0] == UNCONVERGED || child_states[1] == UNCONVERGED)
+	state = UNCONVERGED;
+//if(child_states[1] == NO_REFERENCE)
+//	init_search_locations();
 
-
-
-
-	
 //PROJECT5 end
 //-----------------------------
 	

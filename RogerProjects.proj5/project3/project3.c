@@ -123,15 +123,15 @@ Robot* roger;
 		case (SAMPLE):
 
 			//sample a new location from a distribution (currently uniform)
-			if (sample_heading(&search_heading) == FALSE)
-			{	
-				printf("No more search locations!");
+			if (sample_heading(&search_heading) == FALSE){
+				printf("No more search locations!\n");
 				state = NO_REFERENCE;
 				break;
 			}
 			printf("Picked random heading: %4.3f \n ", search_heading);
 			sHeading = search_heading;
 			// go to next state
+			state = UNCONVERGED;
 			controller_state = MOVE;
 			break;
 
@@ -373,7 +373,7 @@ Robot* roger;
 int macro0(roger)
 Robot* roger;
 {
-	static int state = NO_REFERENCE;
+	static int state = UNCONVERGED;
 	const int num_children = 2;
 	static int init = TRUE;
 	static int* child_states;
@@ -384,7 +384,7 @@ Robot* roger;
 		child_states = (int*) malloc(num_children*sizeof(int));
 		for (i=0; i<num_children; i++) 
 		{
-			child_states[i] = NO_REFERENCE;
+			child_states[i] = UNCONVERGED;
 		}
 		init = FALSE;
 	}
@@ -410,7 +410,12 @@ Robot* roger;
 		case 3: // NO_REFERENCE, CONVERGED
 			child_states[0] = primitive0(roger);
 			child_states[1] = primitive1(roger);
-			state = NO_REFERENCE;
+			if(child_states[0] == NO_REFERENCE){
+//				printf("primitive0: no reference\n");
+				state = NO_REFERENCE;
+			}
+			else
+				state = UNCONVERGED;
 			break;
 		case 4: // DONT_CARE, NO_REFERENCE
 		case 5: // DONT_CARE, DONT_CARE
@@ -437,6 +442,7 @@ Robot* roger;
 
 		default:
 			break;
+
 
 
 //PROJECT3 end
