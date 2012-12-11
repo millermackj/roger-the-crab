@@ -23,12 +23,20 @@ enum {
 };
 
 extern long unsigned int t;
-
+extern char* statenames[4];
 int randomize_ball_position = FALSE;
+FILE * writefile;
+int doOnce = 1;
 
 project4_control(roger)
 Robot* roger;
 {
+	if(doOnce){
+		writefile = fopen("punching_episodes.tab", "w");
+		doOnce = 0;
+		fprintf(writefile, "time\tx error\ty error\tL0 error\tL1 error\tR0 error\tR1 error\tL eye error\tR eye error\n");
+	}
+
 	static int state = 0;
 	
 	//comment in to test eye_triangulation in combination with left mouse click in user input mode!
@@ -52,7 +60,17 @@ Robot* roger;
 	//execute the search track controller
 	state = macro1(roger);
 
-	//printf("Current controller state: %d \n", state);
+		fprintf(writefile, "%lu\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",t,
+				roger->base_setpoint[X] - roger->base_position[X],
+				roger->base_setpoint[Y] - roger->base_position[Y],
+			roger->arm_setpoint[LEFT][X] - roger->arm_theta[LEFT][X],
+			roger->arm_setpoint[LEFT][Y] - roger->arm_theta[LEFT][Y],
+			roger->arm_setpoint[RIGHT][X] - roger->arm_theta[RIGHT][X],
+			roger->arm_setpoint[RIGHT][Y] - roger->arm_theta[RIGHT][Y],
+			roger->eyes_setpoint[LEFT] - roger->eye_theta[LEFT],
+			roger->eyes_setpoint[RIGHT] - roger->eye_theta[RIGHT]);
+
+	t++;
 
 }
 
@@ -117,6 +135,8 @@ double *x, *y;
 
 double arm_home_predator[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
 			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
+//double arm_home_predator[2][2] = {{HOME_L1, HOME_L2},{HOME_R1, HOME_R2}};
+
 
 /*
 / APPROACH - primitive controller p2 will use base to approach the ball while eyes keep tracking the ball
@@ -207,7 +227,6 @@ Robot* roger;
 	double punch_duration = 100.0; // duration in ms of punch
 	//state to be returned to outside
 	static int state = NO_REFERENCE;
-	
 	state = NO_REFERENCE;
 
 	//check if ball is in view
@@ -264,6 +283,7 @@ Robot* roger;
 	  	punch_time = 1;
 	  }
 	  if(isPunching){
+	  	state = UNCONVERGED;
 	  	double handPos_w[4] = {0,0,0,1.0};
 	  	double handPos_b[4];
 	  	double vector_mag;
@@ -294,15 +314,18 @@ Robot* roger;
 	  		}
 	  	}
 	  	punch_time++;
-	  	state = UNCONVERGED;
+
 
 			//calculate arm endpoint force vector length
-			hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
-			hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
+			hand_force[punch_limb] = hand_ext_forces(roger, punch_limb, &fx, &fy);
+//			hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
 
-			if(!hand_force[punch_limb])
-				made_contact = 1;
-
+			if(hand_force[punch_limb] && (fx > 0.0 || fy > 0.0)){
+				if(punch_time > 5)
+					printf("hand force detected: punch converged!\n");
+					made_contact = 1;
+				state = CONVERGED;
+			}
 	  	// check if punch is done or ball is out of punching range
 	  	if((double)punch_time > punch_duration || !(fabs((BASE_CONTROL_OFFSET + 1.5*R_OBJ) - ref_b[X]) <= 2.0*R_OBJ
 		  		&& fabs(ref_b[Y]) <= 2.0*R_OBJ)){
@@ -313,10 +336,15 @@ Robot* roger;
 				punch_time = 0;
 				// stop punching
 				isPunching = 0;
-				state = CONVERGED;
-				punch_limb = !punch_limb; // alternate punching arms
+				if(made_contact){
+					punch_limb = !punch_limb; // alternate punching arms
+					made_contact = 0;
+				}
 	  	}
 
+	  }
+	  else{
+	  	state = NO_REFERENCE;
 	  }
 
 	  //check if in reach (inv_kinematics will return TRUE)
@@ -376,6 +404,14 @@ Robot* roger;
 		roger->arm_setpoint[RIGHT][1] = arm_home_predator[RIGHT][1];
 	}
 	
+//	//calculate arm endpoint force vector length
+//	hand_force[LEFT] = hand_ext_forces(roger, LEFT, &fx, &fy);
+//	hand_force[RIGHT] = hand_ext_forces(roger, RIGHT, &fx, &fy);
+//
+//	if(!hand_force[punch_limb]){
+//		state = CONVERGED;
+//	}
+
 	return state;
 }
 
@@ -383,7 +419,7 @@ Robot* roger;
 int macro1(roger)
 Robot* roger;
 {
-	int state = NO_REFERENCE;	
+	static int state = UNCONVERGED;
 	const int num_children = 3;
 	static int init = TRUE;
 	static int* child_states;
@@ -398,7 +434,7 @@ Robot* roger;
 		}
 		init = FALSE;
 	}
-	//printf("Macro state: %d (Search-Track: %d / Approach: %d / Punch: %d)\n", state, child_states[0], child_states[1], child_states[2]);
+	//printf("Macro state: %s (Punch: %s / Approach: %s / Search-Track: %s)\n", statenames[state], statenames[child_states[0]], statenames[child_states[1]], statenames[child_states[2]]);
 
 
 //------------------------
@@ -410,26 +446,55 @@ Robot* roger;
 //either through assigning DONT_CARE or running the appropriate controller-- just like in project3. Likewise, you also need to update 'state'  
 
 	
+child_states[0] = primitive3(roger);
+
+if(child_states[0] == NO_REFERENCE){
+	child_states[1] = primitive2(roger);
+	if(child_states[1] == UNCONVERGED)
+		state = UNCONVERGED;
+	else if(child_states[1] == NO_REFERENCE)
+		child_states[2] = macro0(roger);
+	if(child_states[2] == NO_REFERENCE)
+		state = NO_REFERENCE;
+	else if(child_states[2] == UNCONVERGED)
+		state = UNCONVERGED;
+}
+else{
+	state = child_states[0];
+}
+
+
+
+
 // ...
-	if(child_states[2] >= UNCONVERGED){
-		child_states[0] = DONT_CARE;
-		child_states[1] = DONT_CARE;
-		child_states[2] = primitive3(roger);
-	}
-	else{
-		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
-			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is upon ball
-				child_states[2] = primitive3(roger); // try to punch the ball
-			else
-				child_states[2] = DONT_CARE; // don't try to punch the ball
-		}
-		else{ // ball is not in sight
-			child_states[1] = DONT_CARE;
-			child_states[2] = DONT_CARE;
-		}
-	}
-
-
+//	// if punch is in progress, keep punching
+//	if(child_states[2] >= UNCONVERGED){
+//		state = child_states[2];
+//		child_states[0] = DONT_CARE;
+//		child_states[1] = DONT_CARE;
+//		child_states[2] = primitive3(roger);
+//	}
+//	else{ // punch is not in progress
+//		if((child_states[0] = macro0(roger)) >= UNCONVERGED){ // ball is being tracked, but maybe not locked in
+//			if((child_states[1] = primitive2(roger)) >= UNCONVERGED) // base is upon ball
+//				child_states[2] = primitive3(roger); // try to punch the ball
+//			if(child_states[2] == CONVERGED)
+//				state = CONVERGED;
+//			else
+//				child_states[2] = DONT_CARE; // don't try to punch the ball
+//			state = UNCONVERGED;
+//		}
+//		else{ // ball is not in sight
+//			child_states[1] = DONT_CARE;
+//			child_states[2] = DONT_CARE;
+////			if(child_states[0] == NO_REFERENCE){
+//////				printf("in macro1: macro0 has no reference\n");
+////				state = NO_REFERENCE;
+////			}
+//			else
+//				state = UNCONVERGED;
+//		}
+//	}
 
 //PROJECT4 end
 //-------------------------------
@@ -554,7 +619,7 @@ double *fx, *fy;
 
 				if ( fabs(dist[X]) < R_TACTILE + XDELTA && fabs(dist[Y]) < R_TACTILE + YDELTA )
 				{
-					//printf("Touching obstacle. \n");
+					printf("Touching obstacle. \n");
 					return FALSE;
 				}
 			}
@@ -567,7 +632,6 @@ double *fx, *fy;
 	
 	if (sqrt(SQR(dist[X]) + SQR(dist[Y])) < R_BASE + R_TACTILE)
 	{
-		if(t%50 == 0)
 		printf("Touching robot base: \n");
 		return FALSE;
 	}
@@ -584,7 +648,7 @@ double *fx, *fy;
 	
 	if (sqrt(SQR(dist[X]) + SQR(dist[Y])) < R_TACTILE + R_TACTILE)
 	{
-		printf("Touching hands. \n");	
+		printf("Touching hands. \n");
 		return FALSE;
 	}
 

@@ -33,6 +33,9 @@ extern int test_num; // counter resets at each setpoint
 extern long int t; // ms time variable
 extern char filename[32];
 int firstRun = TRUE;
+
+//double arm_home[2][2] = {{HOME_L1, HOME_L2},{HOME_R1, HOME_R2}};
+
 double arm_home[2][2] = {{(11.0*M_PI/24.0), -(5.0*M_PI/6.0)},
 			 {-(11.0*M_PI/24.0), (5.0*M_PI/6.0)}};
 
@@ -120,15 +123,15 @@ Robot* roger;
 		case (SAMPLE):
 
 			//sample a new location from a distribution (currently uniform)
-			if (sample_heading(&search_heading) == FALSE)
-			{	
-				printf("No more search locations!");
+			if (sample_heading(&search_heading) == FALSE){
+				printf("No more search locations!\n");
 				state = NO_REFERENCE;
 				break;
 			}
 			printf("Picked random heading: %4.3f \n ", search_heading);
 			sHeading = search_heading;
 			// go to next state
+			state = UNCONVERGED;
 			controller_state = MOVE;
 			break;
 
@@ -291,6 +294,7 @@ Robot* roger;
 		//calculate errors for eyes and base
 		if((ul == 63 || ul == 64) && (ur == 63 || ur == 64)) {
 			error_eye[LEFT] = error_eye[RIGHT] = 0;
+			printf("in prim1: gaze is centered!\n");
 		}
 		else{
 		  error_eye[LEFT] = (NPIXELS/2 - ul) * RAD_PER_PIXEL;
@@ -313,8 +317,6 @@ Robot* roger;
 	  		error_base -= 2.0*M_PI;
 	  	else if(error_base < -M_PI)
 	  		error_base += 2.0*M_PI;
-
-
 
 		  if(fabs(error_base) < 0.05)
 			  	error_base = 0;
@@ -339,13 +341,15 @@ Robot* roger;
 		  	matXvec(wTb, ref_b, ref_w);
 
 		  	//turn base to minimize heading error
-		  	roger->base_setpoint[0] = ref_w[0];
-		  	roger->base_setpoint[1] = ref_w[1];
+		  	define_base_setpoint(roger, ref_w[X], ref_w[Y]);
 		  }
 
 		//change 'state' once eyes and base are centered on the ball
-		if(error_eye[LEFT] == 0 && error_eye[RIGHT] == 0 && error_base == 0)
+//		if(error_eye[LEFT] == 0 && error_eye[RIGHT] == 0 && error_base == 0){
+		if(error_eye[LEFT] == 0 && error_eye[RIGHT] == 0){
+		  printf("search-track is converged!\n");
 			state = CONVERGED;
+		}
 
 
 	//PROJECT3 end
@@ -370,7 +374,7 @@ Robot* roger;
 int macro0(roger)
 Robot* roger;
 {
-	static int state = NO_REFERENCE;
+	static int state = UNCONVERGED;
 	const int num_children = 2;
 	static int init = TRUE;
 	static int* child_states;
@@ -381,7 +385,7 @@ Robot* roger;
 		child_states = (int*) malloc(num_children*sizeof(int));
 		for (i=0; i<num_children; i++) 
 		{
-			child_states[i] = NO_REFERENCE;
+			child_states[i] = UNCONVERGED;
 		}
 		init = FALSE;
 	}
@@ -397,7 +401,7 @@ Robot* roger;
 
 //if(t % 50 == 0)
 //	printf("time: %lf Macro state: %s (track: %s / search: %s)\n", t/1000.0, statenames[state], statenames[child_states[1]],statenames[child_states[0]]);
-
+//printf("in macro0: \n");
 	//					      TRACK             SEARCH
 	switch (states_to_int(child_states, num_children))
 	{
@@ -407,7 +411,12 @@ Robot* roger;
 		case 3: // NO_REFERENCE, CONVERGED
 			child_states[0] = primitive0(roger);
 			child_states[1] = primitive1(roger);
-			state = NO_REFERENCE;
+			if(child_states[0] == NO_REFERENCE){
+//				printf("primitive0: no reference\n");
+				state = NO_REFERENCE;
+			}
+			else
+				state = UNCONVERGED;
 			break;
 		case 4: // DONT_CARE, NO_REFERENCE
 		case 5: // DONT_CARE, DONT_CARE
@@ -427,13 +436,15 @@ Robot* roger;
 		case 13: // CONVERGED, DONT_CARE
 		case 14: // CONVERGED, UNCONVERGED
 		case 15: // CONVERGED, CONVERGED
+			state = CONVERGED;
+			printf("track has converged!\n");
 			child_states[0] = DONT_CARE;
 			child_states[1] = primitive1(roger);
-			state = CONVERGED;
 			break;
 
 		default:
 			break;
+
 
 
 //PROJECT3 end

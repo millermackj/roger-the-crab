@@ -25,10 +25,18 @@ enum {
 extern long unsigned int t;
 
 int randomize_ball_position = FALSE;
+FILE * writefile;
+int doOnce = 1;
 
 project4_control(roger)
 Robot* roger;
 {
+	if(doOnce){
+		writefile = fopen("punching_episodes.tab", "w");
+		doOnce = 0;
+		fprintf(writefile, "time\tx\ty\tL0\tL1\tR0\tR1\n");
+	}
+
 	static int state = 0;
 	
 	//comment in to test eye_triangulation in combination with left mouse click in user input mode!
@@ -51,6 +59,12 @@ Robot* roger;
 
 	//execute the search track controller
 	state = macro1(roger);
+	if(t%10 == 0){
+		fprintf(writefile, "%lu\t%f\t%f\t%f\t%f\t%f\t%f\n",t, roger->base_position[X], roger->base_position[Y],
+			roger->arm_theta[LEFT][X], roger->arm_theta[LEFT][Y],
+			roger->arm_theta[RIGHT][X],roger->arm_theta[RIGHT][Y]);
+	}
+	t++;
 
 	//printf("Current controller state: %d \n", state);
 
